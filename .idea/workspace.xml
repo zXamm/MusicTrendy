@@ -9,9 +9,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8305cd08-1023-4fbb-8758-df65790a179c" name="Changes" comment="Project CAT201">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
-    </list>
+    <list default="true" id="8305cd08-1023-4fbb-8758-df65790a179c" name="Changes" comment="Project CAT201" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -66,8 +64,9 @@
   "keyToString": {
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "Tomcat Server.MusicTrendy.executor": "Run",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -81,6 +80,12 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\UWAIS\IdeaProjects\MusicTrendy" />
+      <recent name="C:\Users\UWAIS\IdeaProjects\MusicTrendy\.gitignore" />
+    </key>
+  </component>
   <component name="RunDashboard">
     <option name="configurationStatuses">
       <map>
@@ -205,7 +210,7 @@
       <workItem from="1767349878102" duration="978000" />
       <workItem from="1767360160438" duration="11006000" />
       <workItem from="1767775401237" duration="1000" />
-      <workItem from="1767775801681" duration="1138000" />
+      <workItem from="1767775801681" duration="1728000" />
     </task>
     <task id="LOCAL-00001" summary="Project CAT201">
       <option name="closed" value="true" />
