@@ -135,4 +135,7 @@ public class CartDAO {
         }
     }
 
+    public int getCartCount(int userId) {
+        return userId;
+    }
 }

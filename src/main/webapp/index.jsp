@@ -28,6 +28,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
 
@@ -70,7 +71,7 @@
         }
 
         .main-header {
-            padding: 10px 0; /* Reduced padding */
+            padding: 10px 0;
             box-shadow: 0 4px 20px rgba(0,0,0,0.05);
             position: relative;
             z-index: 5;
@@ -91,7 +92,6 @@
         /* --- CAROUSEL (UPDATED SIZE) --- */
         .hero-section { position: relative; padding: 0; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
 
-        /* CHANGED: Reduced height from 500px to 380px */
         .hero-img {
             height: 380px;
             object-fit: cover;
@@ -118,18 +118,18 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 100px; /* Fixed width helps alignment */
+            width: 100px;
             text-decoration: none;
             transition: transform 0.3s ease;
             cursor: pointer;
         }
 
         .category-item:hover {
-            transform: translateY(-10px); /* Lifts up slightly on hover */
+            transform: translateY(-10px);
         }
 
         .category-item img {
-            height: 80px; /* Keeps all icons the same size */
+            height: 80px;
             width: auto;
             object-fit: contain;
             margin-bottom: 15px;
@@ -151,7 +151,7 @@
         .brand-section {
             padding: 50px 0;
             text-align: center;
-            background: #f9f9f9; /* Slight grey bg to separate from category section */
+            background: #f9f9f9;
             border-bottom: 1px solid var(--border-light);
         }
 
@@ -160,18 +160,18 @@
             justify-content: center;
             align-items: center;
             flex-wrap: wrap;
-            gap: 60px; /* Generous spacing between logos */
+            gap: 60px;
             margin-top: 40px;
         }
 
         .brand-item {
             display: block;
-            width: 120px; /* Fixed width for consistency */
+            width: 120px;
             height: 60px;
             position: relative;
             transition: transform 0.3s ease;
-            opacity: 0.6;       /* Slightly faded by default */
-            filter: grayscale(100%); /* Black and white effect */
+            opacity: 0.6;
+            filter: grayscale(100%);
         }
 
         .brand-item img {
@@ -181,9 +181,9 @@
         }
 
         .brand-item:hover {
-            transform: scale(1.1); /* Zoom effect */
-            opacity: 1;            /* Full visibility */
-            filter: grayscale(0%); /* Full Color on hover */
+            transform: scale(1.1);
+            opacity: 1;
+            filter: grayscale(0%);
         }
 
         .carousel-caption { bottom: 20%; }
@@ -208,7 +208,6 @@
         .product-card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(0,0,0,0.15); }
 
         /* --- SIMPLE ZOOM CONTAINER --- */
-        /* CHANGED: Reduced height to 180px and increased padding */
         .card-img-container {
             height: 180px;
             padding: 25px;
@@ -251,10 +250,10 @@
 
         footer {
             padding: 40px 0;
-            border-top: 1px solid #444; /* Darker border for dark footer */
+            border-top: 1px solid #444;
         }
         .footer-link {
-            color: #bbb; /* Light gray text for dark bg */
+            color: #bbb;
             font-size: 0.85rem;
             display: block;
             margin-bottom: 8px;
@@ -268,7 +267,7 @@
             color: #999 !important;
         }
         footer h5 {
-            color: #fff; /* White headings */
+            color: #fff;
         }
     </style>
 </head>
@@ -288,10 +287,12 @@
             </div>
 
             <div class="col-md-6 my-3 my-md-0">
-                <div class="input-group search-group">
-                    <input type="text" class="form-control" placeholder="Search item...">
-                    <button class="btn" type="button"><i class="fas fa-search"></i></button>
-                </div>
+                <form action="products" method="get" class="d-flex w-100">
+                    <div class="input-group search-group w-100">
+                        <input type="text" name="search" class="form-control" placeholder="Search item..." required>
+                        <button class="btn" type="submit"><i class="fas fa-search"></i></button>
+                    </div>
+                </form>
             </div>
 
             <div class="col-md-3 text-center text-md-end">
@@ -319,10 +320,9 @@
 <nav class="nav-strip sticky-top">
     <div class="container text-center">
         <a href="index.jsp" style="color: var(--zoso-green);">Home</a>
-        <a href="products">Shop by Category</a>
-        <a href="products">Shop by Brands</a>
+        <a href="products">Shop Catalog</a>
         <a href="orders">My Orders</a>
-        <a href="#">About Us</a>
+        <a href="about.jsp">About Us</a>
     </div>
 </nav>
 
@@ -411,7 +411,7 @@
             </a>
 
             <a href="products?category=quitars" class="category-item">
-                <img src="images/guitar1.png" alt="guitars">
+                <img src="images/guitar1.png" alt="Guitars">
                 <span>Guitars</span>
             </a>
         </div>
@@ -560,10 +560,12 @@
             </div>
             <div class="col-md-3 mb-4">
                 <h5 class="fw-bold mb-3">Keep in Touch</h5>
-                <div class="input-group">
-                    <input type="email" class="form-control" placeholder="email@example.com">
-                    <button class="btn btn-outline-secondary" type="button">✔</button>
-                </div>
+                <form action="subscribe" method="post">
+                    <div class="input-group">
+                        <input type="email" name="email" class="form-control" placeholder="email@example.com" required>
+                        <button class="btn btn-outline-secondary" type="submit">✔</button>
+                    </div>
+                </form>
             </div>
         </div>
         <hr>
@@ -572,6 +574,32 @@
         </div>
     </div>
 </footer>
+
+<%
+    String popupType = (String) session.getAttribute("popup_type");
+    String popupMessage = (String) session.getAttribute("popup_message");
+
+    if (popupType != null) {
+%>
+<script>
+    Swal.fire({
+        icon: '<%= popupType %>',
+        title: 'Success!',
+        text: '<%= popupMessage %>',
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+        background: '#fff',
+        iconColor: '#4c8a2c',
+        toast: true,                // Optional: Makes it a small toast notification
+        position: 'top-end'         // Optional: Shows at top right like a notification
+    });
+</script>
+<%
+        session.removeAttribute("popup_type");
+        session.removeAttribute("popup_message");
+    }
+%>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
