@@ -26,11 +26,21 @@
         .btn { padding: 8px 12px; text-decoration: none; border-radius: 4px; font-size: 14px; cursor: pointer; border: none; display: inline-block; }
         .btn-blue { background-color: #0b5ed7; color: white; }
         .btn-green { background-color: #28a745; color: white; }
-        .btn-grey { background-color: #6c757d; color: white; }
         .btn-dark { background-color: #222; color: white; }
 
+        .tracking-code { font-family: "Courier New", monospace; font-weight: bold; color: #555; letter-spacing: 1px; }
         .back-link { display: inline-block; margin-top: 20px; text-decoration: none; color: #333; font-weight: bold; }
     </style>
+
+    <script>
+        function promptReturn(orderId) {
+            let reason = prompt("Please enter the reason for return:");
+            if (reason != null && reason.trim() !== "") {
+                // Redirect to Servlet with the Reason attached
+                window.location.href = "orders?action=return&orderId=" + orderId + "&reason=" + encodeURIComponent(reason);
+            }
+        }
+    </script>
 </head>
 <body>
 
@@ -50,7 +60,9 @@
         <th>Total (RM)</th>
         <th>Date</th>
         <th>Receipt</th>
-        <th>Status</th> <th>Actions</th>
+        <th>Tracking No.</th>
+        <th>Status</th>
+        <th>Actions</th>
     </tr>
 
     <%
@@ -61,14 +73,20 @@
             double total = orders.getDouble("total_amount");
             String status = orders.getString("status");
             String date = orders.getString("created_at");
+            String tracking = orders.getString("tracking_number");
+            if (tracking == null) tracking = "-";
     %>
     <tr>
         <td>#<%= orderId %></td>
         <td>RM <%= String.format("%.2f", total) %></td>
         <td><%= date %></td>
 
+        <td><a href="receipt?orderId=<%= orderId %>" target="_blank" class="btn btn-dark">View</a></td>
+
         <td>
-            <a href="receipt?orderId=<%= orderId %>" target="_blank" class="btn btn-dark">View</a>
+            <% if (!"-".equals(tracking)) { %>
+            <span class="tracking-code"><%= tracking %></span>
+            <% } else { %> <span style="color:#ccc;">Pending</span> <% } %>
         </td>
 
         <td>
@@ -83,7 +101,7 @@
             <% } %>
 
             <% if ("Completed".equals(status)) { %>
-            <a href="orders?action=return&orderId=<%= orderId %>" class="btn btn-blue" onclick="return confirm('Are you sure you want to return this item?')">Request Return</a>
+            <button class="btn btn-blue" onclick="promptReturn(<%= orderId %>)">Request Return</button>
             <% } %>
 
             <% if ("Return Requested".equals(status)) { %>
@@ -102,7 +120,7 @@
     <% } %>
 
     <% if (!hasData) { %>
-    <tr><td colspan="6" style="padding: 20px;">No orders found in this tab.</td></tr>
+    <tr><td colspan="7" style="padding: 20px;">No orders found in this tab.</td></tr>
     <% } %>
 </table>
 

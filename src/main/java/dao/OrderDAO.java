@@ -156,10 +156,36 @@ public class OrderDAO {
     //Admin marks as Shipped
     public void markAsShipped(int orderId) throws Exception {
         Connection conn = DBConnection.getConnection();
-        String sql = "UPDATE orders SET status = 'To Receive', shipped_at = NOW() WHERE order_id = ?";
+
+        //To generate the 5-Letter + 9-Digit code
+        String trackingNum = generateTrackingNumber();
+
+        //Update DB with the new Tracking Number
+        String sql = "UPDATE orders SET status = 'To Receive', shipped_at = NOW(), tracking_number = ? WHERE order_id = ?";
         PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setInt(1, orderId);
+        ps.setString(1, trackingNum);
+        ps.setInt(2, orderId);
         ps.executeUpdate();
+    }
+
+    //Generates "XXXXX123456789" Tracking ID
+    private String generateTrackingNumber() {
+        String letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String digits = "0123456789";
+        StringBuilder sb = new StringBuilder();
+        java.util.Random random = new java.util.Random();
+
+        //To generate 5 Random Letters
+        for (int i = 0; i < 5; i++) {
+            sb.append(letters.charAt(random.nextInt(letters.length())));
+        }
+
+        //To generate 9 Random Digits
+        for (int i = 0; i < 9; i++) {
+            sb.append(digits.charAt(random.nextInt(digits.length())));
+        }
+
+        return sb.toString();
     }
 
     //User confirms Delivery OR Admin force completes
@@ -171,12 +197,14 @@ public class OrderDAO {
         ps.executeUpdate();
     }
 
-    //User requests Return
-    public void requestReturn(int orderId) throws Exception {
+    //User requests Return with reason
+    public void requestReturn(int orderId, String reason) throws Exception {
         Connection conn = DBConnection.getConnection();
-        String sql = "UPDATE orders SET status = 'Return Requested' WHERE order_id = ?";
+        // Update status AND save the reason
+        String sql = "UPDATE orders SET status = 'Return Requested', return_reason = ? WHERE order_id = ?";
         PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setInt(1, orderId);
+        ps.setString(1, reason);
+        ps.setInt(2, orderId);
         ps.executeUpdate();
     }
 

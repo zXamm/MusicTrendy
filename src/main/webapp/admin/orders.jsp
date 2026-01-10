@@ -47,11 +47,14 @@
         th, td { padding: 12px; border: 1px solid #ddd; text-align: center; }
         th { background: #333; color: white; }
 
-        .btn { padding: 6px 12px; text-decoration: none; border-radius: 4px; color: white; font-size: 13px; display: inline-block; margin: 2px; }
+        .btn { padding: 6px 12px; text-decoration: none; border-radius: 4px; color: white; font-size: 13px; display: inline-block; margin: 2px; cursor: pointer; border: none; }
         .btn-ship { background-color: #007bff; }
         .btn-complete { background-color: #28a745; }
         .btn-view { background-color: #6c757d; }
+        .btn-reason { background-color: #ffc107; color: black; font-weight: bold; } /* New Button Style */
         .btn-dark { background-color: #222; }
+
+        .tracking-code { font-family: "Courier New", monospace; font-weight: bold; color: #007bff; letter-spacing: 1px; }
     </style>
 </head>
 <body>
@@ -89,7 +92,10 @@
         <th>Customer</th>
         <th>Total</th>
         <th>Date</th>
-        <th>Receipt</th> <th>Status</th>  <th>Action</th>
+        <th>Receipt</th>
+        <th>Tracking No.</th>
+        <th>Status</th>
+        <th>Action</th>
     </tr>
 
     <%
@@ -101,6 +107,18 @@
             double total = orders.getDouble("total_amount");
             String status = orders.getString("status");
             String date = orders.getString("created_at");
+
+            String tracking = orders.getString("tracking_number");
+            if (tracking == null) tracking = "-";
+
+            //Fetch Reason safely (handle quotes for JS alert)
+            String returnReason = orders.getString("return_reason");
+            if (returnReason == null) returnReason = "No reason provided";
+            String safeReason = returnReason.replace("'", "\\'").replace("\"", "\\\"");
+
+            String statusColor = "orange";
+            if ("Completed".equals(status)) { statusColor = "green"; }
+            else if ("Refunded".equals(status)) { statusColor = "red"; }
     %>
     <tr>
         <td><%= orderId %></td>
@@ -108,14 +126,18 @@
         <td>RM <%= String.format("%.2f", total) %></td>
         <td><%= date %></td>
 
+        <td><a href="receipt?orderId=<%= orderId %>" target="_blank" class="btn btn-dark">View</a></td>
+
         <td>
-            <a href="receipt?orderId=<%= orderId %>" target="_blank" class="btn btn-dark">View</a>
+            <% if (!"-".equals(tracking)) { %>
+            <span class="tracking-code"><%= tracking %></span>
+            <% } else { %> <span style="color:#ccc;">-</span> <% } %>
         </td>
 
         <td>
-            <b style="color: <%= "Return Requested".equals(status) ? "orange" : "black" %>;">
+            <span style="font-weight:bold; color: <%= statusColor %>;">
                 <%= status %>
-            </b>
+            </span>
         </td>
 
         <td>
@@ -128,6 +150,8 @@
             <% } %>
 
             <% if ("Return Requested".equals(status)) { %>
+            <button class="btn btn-reason" onclick="alert('Customer Reason:\n\n<%= safeReason %>')">View Reason</button>
+
             <a href="adminOrders?action=approveReturn&orderId=<%= orderId %>" class="btn btn-complete" onclick="return confirm('Approve Refund?')">Approve</a>
             <a href="adminOrders?action=rejectReturn&orderId=<%= orderId %>" class="btn btn-view" style="background-color:red;" onclick="return confirm('Reject Return?')">Reject</a>
             <% } %>
@@ -140,7 +164,7 @@
     <% } %>
 
     <% if (!hasOrders) { %>
-    <tr><td colspan="7">No orders found for this status.</td></tr>
+    <tr><td colspan="8">No orders found for this status.</td></tr>
     <% } %>
 </table>
 

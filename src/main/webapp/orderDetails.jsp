@@ -13,6 +13,7 @@
     int orderId = 0;
     double total = 0;
     String status = "";
+    String trackingNum = "-"; // as Default
     String dateOrdered = "";
     String dateShipped = null;
     String dateDelivered = null;
@@ -21,6 +22,9 @@
         orderId = order.getInt("order_id");
         total = order.getDouble("total_amount");
         status = order.getString("status");
+        trackingNum = order.getString("tracking_number"); //Fetch Tracking
+        if (trackingNum == null) trackingNum = "-";
+
         dateOrdered = order.getString("created_at");
         dateShipped = order.getString("shipped_at");
         dateDelivered = order.getString("delivered_at");
@@ -34,12 +38,38 @@
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; background-color: #f9f9f9; }
         .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        h2, h3 { color: #333; }
+        h2, h3 { color: #333; margin-bottom: 5px; }
+        .sub-header { color: #777; margin-bottom: 20px; font-size: 14px; }
+        .tracking-label { background: #e9ecef; padding: 4px 8px; border-radius: 4px; color: #333; font-family: "Courier New", monospace; font-weight: bold; }
 
+        /* Timeline Container */
         .timeline { display: flex; justify-content: space-between; margin: 20px 0; border-bottom: 2px solid #eee; padding-bottom: 20px; }
+
+        /* Individual Step Styling */
         .step { text-align: center; flex: 1; color: #ccc; font-size: 14px; }
         .step.active { color: #28a745; font-weight: bold; }
-        .step div { font-size: 24px; margin-bottom: 5px; }
+
+        /* Number Box Styling */
+        .step div {
+            font-size: 18px;
+            margin-bottom: 5px;
+            font-weight: bold;
+            border: 2px solid #ccc;
+            display: inline-block;
+            width: 35px;
+            height: 35px;
+            line-height: 33px;
+            border-radius: 50%;
+            background: #fff;
+            color: #ccc;
+        }
+
+        /* Active Step Styling */
+        .step.active div {
+            border-color: #28a745;
+            background: #28a745;
+            color: white;
+        }
 
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         th, td { padding: 10px; border-bottom: 1px solid #ddd; }
@@ -53,6 +83,15 @@
 
 <div class="container">
     <h2>Order Details #<%= orderId %></h2>
+
+    <div class="sub-header">
+        Tracking Number:
+        <% if (!"-".equals(trackingNum)) { %>
+        <span class="tracking-label"><%= trackingNum %></span>
+        <% } else { %>
+        <span>(Pending Shipment)</span>
+        <% } %>
+    </div>
 
     <div class="timeline">
         <div class="step active">

@@ -38,13 +38,21 @@ public class OrdersServlet extends HttpServlet {
                 orderDAO.markAsDelivered(orderId);
                 response.sendRedirect("orders?status=Completed"); // Refresh to Completed tab
                 return;
+            } else if ("return".equals(action)) {
+            int orderId = Integer.parseInt(request.getParameter("orderId"));
+
+            //Capture the reason from the URL
+            String reason = request.getParameter("reason");
+            if (reason == null || reason.trim().isEmpty()) {
+                reason = "No reason provided.";
             }
-            else if ("return".equals(action)) {
-                int orderId = Integer.parseInt(request.getParameter("orderId"));
-                orderDAO.requestReturn(orderId);
-                response.sendRedirect("orders?status=Return/Refund");
-                return;
-            }
+
+            //Pass it to the DAO
+            orderDAO.requestReturn(orderId, reason);
+
+            response.sendRedirect("orders?status=Return/Refund");
+            return;
+        }
 
             //Fetch Orders filtered by Status
             ResultSet orders = orderDAO.getOrdersByUserAndStatus(userId, status);
