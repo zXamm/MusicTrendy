@@ -57,6 +57,24 @@ public class ProductDAO {
         return products;
     }
 
+    // NEW: Get all accessories mixed together
+    public List<Product> getAccessoriesGroup() {
+        List<Product> products = new ArrayList<>();
+        // Check your database: do you use 'amps' or 'Amplifiers'? Update this list to match EXACTLY.
+        String sql = "SELECT * FROM products WHERE category IN ('amps', 'mics', 'pedals', 'audio', 'headphones', 'Amplifiers', 'Microphones', 'Audio Interface')";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                products.add(mapResultSetToProduct(rs));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return products;
+    }
+
     // NEW: Filter by Brand (Searches for the brand name within the product name)
     public List<Product> getProductsByBrand(String brand) {
         List<Product> products = new ArrayList<>();

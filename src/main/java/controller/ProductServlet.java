@@ -29,8 +29,15 @@ public class ProductServlet extends HttpServlet {
             request.setAttribute("pageTitle", "Search Results: " + searchQuery);
         } else if (category != null && !category.trim().isEmpty()) {
             // Case 2: Shop by Category
-            productList = productDAO.getProductsByCategory(category);
-            request.setAttribute("pageTitle", "Category: " + category.substring(0, 1).toUpperCase() + category.substring(1));
+            if ("Accessories".equalsIgnoreCase(category)) {
+                // Fetch the group of accessories (Amps, Mics, Pedals, etc.)
+                productList = productDAO.getAccessoriesGroup();
+                request.setAttribute("pageTitle", "Category: Accessories");
+            } else {
+                // Standard behavior for other categories
+                productList = productDAO.getProductsByCategory(category);
+                request.setAttribute("pageTitle", "Category: " + category.substring(0, 1).toUpperCase() + category.substring(1));
+            }
         } else if (brand != null && !brand.trim().isEmpty()) {
             // Case 3: Shop by Brand
             productList = productDAO.getProductsByBrand(brand);

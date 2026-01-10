@@ -387,16 +387,18 @@
             </div>
             <div class="col-md-3 mb-4">
                 <h5 class="fw-bold mb-3">Store Policy</h5>
-                <a href="#" class="footer-link">Refund Policy</a>
-                <a href="#" class="footer-link">Privacy Policy</a>
-                <a href="#" class="footer-link">Terms & Conditions</a>
+                <a href="policies.jsp#refund" class="footer-link">Refund Policy</a>
+                <a href="policies.jsp#privacy" class="footer-link">Privacy Policy</a>
+                <a href="policies.jsp#terms" class="footer-link">Terms & Conditions</a>
             </div>
             <div class="col-md-3 mb-4">
                 <h5 class="fw-bold mb-3">Keep in Touch</h5>
                 <form action="subscribe" method="post">
                     <div class="input-group">
                         <input type="email" name="email" class="form-control" placeholder="email@example.com" required>
-                        <button class="btn btn-outline-secondary" type="submit">✔</button>
+                        <button class="btn" type="submit" style="background-color: var(--zoso-green); color: white;">
+                            <i class="fas fa-check"></i>
+                        </button>
                     </div>
                 </form>
             </div>

@@ -347,7 +347,7 @@
                 <div class="carousel-caption d-none d-md-block">
                     <h1 class="hero-title">Rock the Beat</h1>
                     <p>Premium Drum Kits Available</p>
-                    <a href="products" class="btn btn-add-cart" style="width: auto; padding: 10px 30px;">View Drums</a>
+                    <a href="products?category=Drums" class="btn btn-add-cart" style="width: auto; padding: 10px 30px;">View Drums</a>
                 </div>
             </div>
             <div class="carousel-item">
@@ -355,7 +355,7 @@
                 <div class="carousel-caption d-none d-md-block">
                     <h1 class="hero-title">Accessories</h1>
                     <p>From beginner to professional</p>
-                    <a href="products" class="btn btn-add-cart" style="width: auto; padding: 10px 30px;">Shop Accessories</a>
+                    <a href="products?category=Accessories" class="btn btn-add-cart" style="width: auto; padding: 10px 30px;">Shop Accessories</a>
                 </div>
             </div>
         </div>
@@ -554,16 +554,18 @@
             </div>
             <div class="col-md-3 mb-4">
                 <h5 class="fw-bold mb-3">Store Policy</h5>
-                <a href="#" class="footer-link">Refund Policy</a>
-                <a href="#" class="footer-link">Privacy Policy</a>
-                <a href="#" class="footer-link">Terms & Conditions</a>
+                <a href="policies.jsp#refund" class="footer-link">Refund Policy</a>
+                <a href="policies.jsp#privacy" class="footer-link">Privacy Policy</a>
+                <a href="policies.jsp#terms" class="footer-link">Terms & Conditions</a>
             </div>
             <div class="col-md-3 mb-4">
                 <h5 class="fw-bold mb-3">Keep in Touch</h5>
                 <form action="subscribe" method="post">
                     <div class="input-group">
                         <input type="email" name="email" class="form-control" placeholder="email@example.com" required>
-                        <button class="btn btn-outline-secondary" type="submit">✔</button>
+                        <button class="btn" type="submit" style="background-color: var(--zoso-green); color: white;">
+                            <i class="fas fa-check"></i>
+                        </button>
                     </div>
                 </form>
             </div>
