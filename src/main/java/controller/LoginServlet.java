@@ -25,16 +25,23 @@ public class LoginServlet extends HttpServlet {
 
         if (user != null) {
             HttpSession session = request.getSession();
-            session.setAttribute("user", user);   // store whole user object
+            session.setAttribute("user", user);
 
-            // ✅ redirect based on role
+            // --- NEW CODE STARTS HERE ---
+            // 1. Set the success message in the session
+            session.setAttribute("popup_type", "success");
+            session.setAttribute("popup_message", "Login Successful! Welcome back.");
+            // --- NEW CODE ENDS HERE ---
+
             if ("admin".equals(user.getRole())) {
-                response.sendRedirect("admin/dashboard.jsp");  // we'll create later
+                response.sendRedirect("admin/dashboard.jsp");
             } else {
+                // The popup will show on the 'products' page because we are redirecting there
                 response.sendRedirect("products");
             }
 
         } else {
+            // You can also add a popup for failure if you want
             request.setAttribute("error", "Invalid email or password!");
             request.getRequestDispatcher("login.jsp").forward(request, response);
         }
