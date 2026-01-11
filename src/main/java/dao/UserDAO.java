@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 
 public class UserDAO {
 
-    // ✅ Login: return User if correct email/password
+    //  Login: return User if correct email/password
     public User login(String email, String password) {
         String sql = "SELECT * FROM users WHERE email = ? AND password = ?";
         try (Connection conn = DBConnection.getConnection();
@@ -35,7 +35,7 @@ public class UserDAO {
         return null;
     }
 
-    // ✅ Register: insert new customer
+    //  Register: insert new customer
     public boolean register(String name, String email, String password) {
         String sql = "INSERT INTO users(name, email, password, role) VALUES (?, ?, ?, 'customer')";
         try (Connection conn = DBConnection.getConnection();
@@ -54,7 +54,7 @@ public class UserDAO {
         return false;
     }
 
-    // ✅ Check if email exists
+    //  Check if email exists
     public boolean emailExists(String email) {
         String sql = "SELECT user_id FROM users WHERE email = ?";
         try (Connection conn = DBConnection.getConnection();

@@ -7,7 +7,7 @@ import java.util.List;
 
 public class OrderDAO {
 
-    // ✅ Create order + order_items + reduce stock + clear cart (all inside transaction)
+    //  Create order + order_items + reduce stock + clear cart (all inside transaction)
     public int checkout(int userId) {
         int orderId = -1;
 
@@ -25,7 +25,7 @@ public class OrderDAO {
         String clearCartSql = "DELETE FROM cart_items WHERE cart_id = ?";
 
         try (Connection conn = DBConnection.getConnection()) {
-            conn.setAutoCommit(false); // ✅ start transaction
+            conn.setAutoCommit(false); //  start transaction
 
             //Get cart_id
             int cartId = -1;
@@ -42,7 +42,7 @@ public class OrderDAO {
                 return -1;
             }
 
-            // 2️⃣ Read cart items + calculate total
+            // Read cart items + calculate total
             List<int[]> items = new ArrayList<>();
             double totalAmount = 0;
 
@@ -56,7 +56,7 @@ public class OrderDAO {
                     double price = rs.getDouble("price");
                     int stock = rs.getInt("stock");
 
-                    // ✅ check stock
+                    // check stock
                     if (qty > stock) {
                         conn.rollback();
                         return -2; // not enough stock
@@ -72,7 +72,7 @@ public class OrderDAO {
                 return -3; // cart empty
             }
 
-            // 3️⃣ Insert into orders table
+            //  Insert into orders table
             try (PreparedStatement ps = conn.prepareStatement(insertOrderSql, Statement.RETURN_GENERATED_KEYS)) {
                 ps.setInt(1, userId);
                 ps.setDouble(2, totalAmount);
@@ -220,7 +220,7 @@ public class OrderDAO {
         return sb.toString();
     }
 
-    // ✅ Get order summary
+    //  Get order summary
     public ResultSet getOrder(int orderId) throws Exception {
         Connection conn = DBConnection.getConnection();
         String sql = "SELECT * FROM orders WHERE order_id = ?";
@@ -278,7 +278,7 @@ public class OrderDAO {
         ps.executeUpdate();
     }
 
-    // ✅ Get order items details
+    //  Get order items details
     public ResultSet getOrderItems(int orderId) throws Exception {
         Connection conn = DBConnection.getConnection();
         String sql =

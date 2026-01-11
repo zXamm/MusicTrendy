@@ -18,14 +18,14 @@ public class AdminProductsServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // ✅ Load products from DB using DAO
+        //  Load products from DB using DAO
         ProductDAO productDAO = new ProductDAO();
         List<Product> products = productDAO.getAllProducts();
 
-        // ✅ Put into request
+        //  Put into request
         request.setAttribute("products", products);
 
-        // ✅ Forward to layout (NOT directly to productsContent.jsp)
+        //  Forward to layout (NOT directly to productsContent.jsp)
         request.getRequestDispatcher("/admin/adminLayout.jsp?page=productsContent.jsp")
                 .forward(request, response);
     }
