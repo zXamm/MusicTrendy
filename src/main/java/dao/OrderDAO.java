@@ -223,5 +223,19 @@ public class OrderDAO {
         return ps.executeQuery();
     }
 
+    public ResultSet getTopSellingProducts(int limit) throws Exception {
+        String sql =
+                "SELECT p.product_id, p.name, p.image, p.price, SUM(oi.quantity) AS totalSold " +
+                        "FROM order_items oi " +
+                        "JOIN products p ON oi.product_id = p.product_id " +
+                        "GROUP BY p.product_id, p.name, p.image, p.price " +
+                        "ORDER BY totalSold DESC " +
+                        "LIMIT ?";
+
+        Connection con = DBConnection.getConnection();
+        PreparedStatement ps = con.prepareStatement(sql);
+        ps.setInt(1, limit);
+        return ps.executeQuery(); // make sure you close this later if you keep ResultSet
+    }
 
 }

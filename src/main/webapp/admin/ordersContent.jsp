@@ -31,7 +31,6 @@
         <div class="card">
             <h3>Total Sales</h3>
             <p>RM <%= String.format("%.2f", totalSales) %></p>
-            <small>Updated automatically</small>
         </div>
 
         <div class="card">

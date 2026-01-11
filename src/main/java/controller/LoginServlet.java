@@ -34,7 +34,7 @@ public class LoginServlet extends HttpServlet {
             // --- NEW CODE ENDS HERE ---
 
             if ("admin".equals(user.getRole())) {
-                response.sendRedirect("admin/dashboard.jsp");
+                response.sendRedirect(request.getContextPath() + "/admin/adminLayout.jsp?page=dashboardContent.jsp");
             } else {
                 // The popup will show on the 'products' page because we are redirecting there
                 response.sendRedirect("products");
