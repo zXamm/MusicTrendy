@@ -23,6 +23,10 @@ public class ReceiptServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        // Set response encoding to handle emojis/special chars
+        response.setContentType("text/html; charset=UTF-8");
+        response.setCharacterEncoding("UTF-8");
+
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("user") == null) {
             response.sendRedirect("login.jsp");
@@ -31,44 +35,64 @@ public class ReceiptServlet extends HttpServlet {
 
         User user = (User) session.getAttribute("user");
         int userId = user.getUserId();
+        String userRole = user.getRole(); // Get the role from the session
 
-        int orderId = Integer.parseInt(request.getParameter("orderId"));
+        //Get Order ID
+        String orderIdParam = request.getParameter("orderId");
+        if (orderIdParam == null) {
+            response.sendRedirect("orders");
+            return;
+        }
+        int orderId = Integer.parseInt(orderIdParam);
 
         try {
-            // ✅ secure: check the order belongs to this user
-            ResultSet orderRs = orderDAO.getOrderByUser(orderId, userId);
+            //Security Check (UPDATED)
+            ResultSet orderRs;
 
+            //Use equalsIgnoreCase so "Admin" and "admin" both work
+            if ("admin".equalsIgnoreCase(userRole)) {
+                orderRs = orderDAO.getOrder(orderId); // Admin can see any order
+            } else {
+                orderRs = orderDAO.getOrderByUser(orderId, userId); // User sees only theirs
+            }
+
+            //If no result found, show the error
             if (orderRs == null || !orderRs.next()) {
-                response.getWriter().println("❌ Order not found or not yours.");
+                response.getWriter().println("<h3>❌ Error: Order not found or access denied.</h3>");
+                response.getWriter().println("<p>Debug Info: Your Role is '" + userRole + "'</p>");
                 return;
             }
 
-            // ✅ store order info in attributes
+            //Extract Order Details
             request.setAttribute("orderId", orderRs.getInt("order_id"));
             request.setAttribute("total", orderRs.getDouble("total_amount"));
             request.setAttribute("status", orderRs.getString("status"));
             request.setAttribute("date", orderRs.getString("created_at"));
 
-            // ✅ store items in a List<Map>
+            //Extract Order Items into a List
             ResultSet itemsRs = orderDAO.getOrderItems(orderId);
             List<Map<String, Object>> items = new ArrayList<>();
 
             while (itemsRs.next()) {
-                Map<String, Object> row = new HashMap<>();
-                row.put("name", itemsRs.getString("name"));
-                row.put("unitPrice", itemsRs.getDouble("unit_price"));
-                row.put("qty", itemsRs.getInt("quantity"));
-                row.put("subtotal", itemsRs.getDouble("unit_price") * itemsRs.getInt("quantity"));
-                items.add(row);
+                Map<String, Object> item = new HashMap<>();
+                item.put("name", itemsRs.getString("name"));
+                item.put("unitPrice", itemsRs.getDouble("unit_price"));
+                item.put("quantity", itemsRs.getInt("quantity"));
+
+                double sub = itemsRs.getDouble("unit_price") * itemsRs.getInt("quantity");
+                item.put("subtotal", sub);
+
+                items.add(item);
             }
 
             request.setAttribute("items", items);
 
+            //Forward to JSP
             request.getRequestDispatcher("receipt.jsp").forward(request, response);
 
         } catch (Exception e) {
             e.printStackTrace();
-            response.getWriter().println("❌ Cannot load receipt.");
+            response.getWriter().println("Error loading receipt: " + e.getMessage());
         }
     }
 }
