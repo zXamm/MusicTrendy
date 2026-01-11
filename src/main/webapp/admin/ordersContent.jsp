@@ -1,6 +1,5 @@
 <%@ page import="java.sql.ResultSet" %>
 <%@ page import="model.User" %>
-
 <%
     User user = (User) session.getAttribute("user");
     if (user == null || !"admin".equals(user.getRole())) {
@@ -9,12 +8,10 @@
     }
 
     ResultSet orders = (ResultSet) request.getAttribute("orders");
-
-    // Status for tabs
     String currentStatus = (String) request.getAttribute("currentStatus");
     if (currentStatus == null) currentStatus = "All";
 
-    // Safe dashboard numbers (avoid NullPointer / cast crash)
+    // Statistics (Null safe)
     Double totalSalesObj = (Double) request.getAttribute("totalSales");
     double totalSales = (totalSalesObj != null) ? totalSalesObj : 0.0;
 
@@ -31,223 +28,212 @@
 %>
 
 <style>
-    /* Small extras for this page only */
-    .orders-tabs{
-        display:flex;
-        gap:10px;
-        flex-wrap:wrap;
-        margin-top:14px;
-        margin-bottom:14px;
+    /* Dashboard Specific Styles */
+    .orders-tabs { display:flex; gap:10px; flex-wrap:wrap; margin:20px 0; }
+    .orders-tab {
+        text-decoration:none; color:#555; font-size:13px; font-weight:600;
+        padding:10px 18px; border-radius:30px; background:#fff;
+        border:1px solid #e2e8f0; box-shadow:0 2px 5px rgba(0,0,0,0.05); transition:.2s;
     }
-    .orders-tab{
-        text-decoration:none;
-        font-weight:800;
-        font-size:13px;
-        color:#0f172a;
-        padding:10px 14px;
-        border-radius:12px;
-        background:#fff;
-        border:1px solid #e2e8f0;
-        box-shadow:0 6px 16px rgba(0,0,0,0.05);
-        transition:.15s;
-    }
-    .orders-tab:hover{ background:#f8fafc; transform: translateY(-1px); }
-    .orders-tab.active{
-        background: rgba(22,163,74,0.14);
-        border-color: rgba(22,163,74,0.35);
-        color:#15803d;
+    .orders-tab:hover { background:#f8fafc; transform:translateY(-2px); }
+    .orders-tab.active {
+        background: #558B2F; color: white; border-color: #558B2F;
+        box-shadow: 0 4px 10px rgba(85, 139, 47, 0.3);
     }
 
-    .badge{
-        display:inline-flex;
-        align-items:center;
-        padding:6px 10px;
-        border-radius:999px;
-        font-size:12px;
-        font-weight:900;
-        border:1px solid transparent;
-    }
-    .badge-green{ background: rgba(22,163,74,.14); color:#15803d; border-color: rgba(22,163,74,.25); }
-    .badge-orange{ background: rgba(245,158,11,.14); color:#b45309; border-color: rgba(245,158,11,.25); }
-    .badge-red{ background: rgba(220,38,38,.12); color:#b91c1c; border-color: rgba(220,38,38,.22); }
+    .badge { padding:6px 12px; border-radius:20px; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:0.5px;}
+    .badge-green { background: #dcfce7; color:#166534; }
+    .badge-yellow { background: #fef9c3; color:#854d0e; }
+    .badge-red { background: #fee2e2; color:#991b1b; }
+    .badge-blue { background: #dbeafe; color:#1e40af; }
 
-    .btn{
-        display:inline-flex;
-        align-items:center;
-        justify-content:center;
-        padding:8px 12px;
-        border-radius:10px;
-        text-decoration:none;
-        font-weight:900;
-        font-size:12px;
-        border:none;
-        cursor:pointer;
-        color:#fff;
-        margin-right:6px;
-        transition:.15s;
+    .btn-action {
+        border:none; cursor:pointer; padding:8px 14px; border-radius:8px;
+        font-size:12px; font-weight:700; color:white; transition:.2s; text-decoration:none; display:inline-flex; align-items:center; gap:5px;
     }
-    .btn:hover{ transform: translateY(-1px); }
-    .btn-ship{ background:#2563eb; }
-    .btn-complete{ background:#16a34a; }
-    .btn-reject{ background:#dc2626; }
-    .btn-view2{ background:#334155; }
-    .btn-reason{ background:#f59e0b; color:#111827; }
+    .btn-action:hover { transform:translateY(-2px); opacity:0.9; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
 
-    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    .btn-ship { background:#2563eb; }
+    .btn-complete { background:#16a34a; }
+    .btn-reject { background:#ef4444; }
+    .btn-reason { background:#f59e0b; color:#fff; }
+    .btn-view2 { background:#64748b; }
 </style>
 
-<div style="margin-top: 25px;">
-    <h2 style="margin: 0 0 15px;">Orders & Sales Dashboard</h2>
+<div style="margin-top: 10px;">
+    <h2>Orders Management</h2>
 
-    <!-- ✅ Cards (keep your style) -->
     <div class="cards">
         <div class="card">
             <h3>Total Sales</h3>
             <p>RM <%= String.format("%.2f", totalSales) %></p>
         </div>
-
         <div class="card">
             <h3>Total Orders</h3>
             <p><%= totalOrders %></p>
-            <small>Orders in system</small>
         </div>
-
         <div class="card">
-            <h3>Best Selling Product</h3>
-            <p><%= bestName %></p>
-            <small>Sold: <%= bestSold %></small>
+            <h3>Top Product</h3>
+            <p style="font-size:18px; margin-top:15px;"><%= bestName %></p>
+            <small><%= bestSold %> sold</small>
         </div>
     </div>
 
-    <!-- ✅ Tabs (from main) -->
     <div class="orders-tabs">
-        <a class="orders-tab <%= "All".equals(currentStatus) ? "active" : "" %>"
-           href="<%=request.getContextPath()%>/adminOrders?status=All">All</a>
-
-        <a class="orders-tab <%= "To Ship".equals(currentStatus) ? "active" : "" %>"
-           href="<%=request.getContextPath()%>/adminOrders?status=To Ship">To Ship</a>
-
-        <a class="orders-tab <%= "To Receive".equals(currentStatus) ? "active" : "" %>"
-           href="<%=request.getContextPath()%>/adminOrders?status=To Receive">To Receive</a>
-
-        <a class="orders-tab <%= "Completed".equals(currentStatus) ? "active" : "" %>"
-           href="<%=request.getContextPath()%>/adminOrders?status=Completed">Completed</a>
-
-        <a class="orders-tab <%= "Return/Refund".equals(currentStatus) ? "active" : "" %>"
-           href="<%=request.getContextPath()%>/adminOrders?status=Return/Refund">Return Requests</a>
+        <a class="orders-tab <%= "All".equals(currentStatus) ? "active" : "" %>" href="<%=request.getContextPath()%>/adminOrders?status=All">All Orders</a>
+        <a class="orders-tab <%= "To Ship".equals(currentStatus) ? "active" : "" %>" href="<%=request.getContextPath()%>/adminOrders?status=To Ship">To Ship</a>
+        <a class="orders-tab <%= "To Receive".equals(currentStatus) ? "active" : "" %>" href="<%=request.getContextPath()%>/adminOrders?status=To Receive">To Receive</a>
+        <a class="orders-tab <%= "Completed".equals(currentStatus) ? "active" : "" %>" href="<%=request.getContextPath()%>/adminOrders?status=Completed">Completed</a>
+        <a class="orders-tab <%= "Return/Refund".equals(currentStatus) ? "active" : "" %>" href="<%=request.getContextPath()%>/adminOrders?status=Return/Refund">Return Requests</a>
     </div>
 
-    <!-- ✅ Orders Table -->
-    <div class="section" style="margin-top: 10px;">
-        <h3 style="margin-top:0;">Customer Orders</h3>
-
+    <div class="section">
         <table class="styled-table">
+            <thead>
             <tr>
-                <th>ID</th>
+                <th>Order #</th>
                 <th>Customer</th>
-                <th>Total (RM)</th>
+                <th>Amount</th>
                 <th>Date</th>
-                <th>Receipt</th>
-                <th>Tracking</th>
                 <th>Status</th>
-                <th>Action</th>
+                <th>Receipt</th>
+                <th>Actions</th>
             </tr>
-
+            </thead>
+            <tbody>
             <%
                 boolean hasOrders = false;
                 while (orders != null && orders.next()) {
                     hasOrders = true;
-
                     int orderId = orders.getInt("order_id");
                     String customer = orders.getString("customer_name");
                     double total = orders.getDouble("total_amount");
                     String status = orders.getString("status");
                     String date = orders.getString("created_at");
 
-                    String tracking = orders.getString("tracking_number");
-                    if (tracking == null) tracking = "-";
-
+                    // Robust Escaping for JavaScript
                     String returnReason = orders.getString("return_reason");
-                    if (returnReason == null) returnReason = "No reason provided";
-                    String safeReason = returnReason.replace("'", "\\'").replace("\"", "\\\"");
+                    if (returnReason == null) returnReason = "No reason provided.";
+
+                    String safeReason = returnReason
+                            .replace("\\", "\\\\")
+                            .replace("'", "\\'")
+                            .replace("\"", "&quot;")
+                            .replace("\r", " ")
+                            .replace("\n", "\\n");
             %>
             <tr>
                 <td>#<%= orderId %></td>
-                <td style="font-weight:700;"><%= customer %></td>
-                <td style="font-weight:900; color:#dc2626;">RM <%= String.format("%.2f", total) %></td>
+                <td style="font-weight:bold; color:#333;"><%= customer %></td>
+                <td style="color:#d32f2f; font-weight:bold;">RM <%= String.format("%.2f", total) %></td>
+                <td style="color:#777; font-size:13px;"><%= date.substring(0, 10) %></td>
 
-                <td style="color:#64748b;">
-                    <%= (date != null && date.length() >= 10) ? date.substring(0,10) : (date == null ? "-" : date) %>
-                </td>
-
-                <!-- Receipt (from main) -->
                 <td>
-                    <a class="btn btn-view2"
-                       href="<%=request.getContextPath()%>/receipt?orderId=<%= orderId %>"
-                       target="_blank">View</a>
-                </td>
-
-                <!-- Tracking -->
-                <td class="mono" style="font-weight:900; color:#16a34a;">
-                    <% if (!"-".equals(tracking)) { %>
-                    <%= tracking %>
-                    <% } else { %>
-                    <span style="color:#cbd5e1;">-</span>
+                    <% if ("To Ship".equals(status)) { %> <span class="badge badge-yellow">To Ship</span>
+                    <% } else if ("To Receive".equals(status)) { %> <span class="badge badge-blue">Shipped</span>
+                    <% } else if ("Completed".equals(status)) { %> <span class="badge badge-green">Completed</span>
+                    <% } else if ("Return Requested".equals(status)) { %> <span class="badge badge-red" style="background:#fff7ed; color:#c2410c;">Requesting Return</span>
+                    <% } else if ("Refunded".equals(status)) { %> <span class="badge badge-red">Refunded</span>
+                    <% } else { %> <span class="badge" style="background:#f1f5f9; color:#64748b;"><%= status %></span>
                     <% } %>
                 </td>
 
-                <!-- Status badge -->
                 <td>
-                    <% if ("Return Rejected".equals(status)) { %>
-                    <span class="badge badge-red">Return Rejected</span>
-                    <% } else if ("Refunded".equals(status)) { %>
-                    <span class="badge badge-red">Returned</span>
-                    <% } else if ("Completed".equals(status)) { %>
-                    <span class="badge badge-green">Completed</span>
-                    <% } else { %>
-                    <span class="badge badge-orange"><%= status %></span>
-                    <% } %>
+                    <a href="receipt?orderId=<%= orderId %>" target="_blank" class="btn-action btn-view2">View</a>
                 </td>
 
-                <!-- Actions (from main, fits your style) -->
                 <td>
                     <% if ("To Ship".equals(status)) { %>
-                    <a class="btn btn-ship"
-                       href="<%=request.getContextPath()%>/adminOrders?action=ship&orderId=<%= orderId %>"
-                       onclick="return confirm('Mark as Shipped?')">Ship</a>
-                    <% } %>
+                    <a href="<%=request.getContextPath()%>/adminOrders?action=ship&orderId=<%= orderId %>"
+                       class="btn-action btn-ship" onclick="return confirm('Confirm shipment?')">Ship Now</a>
 
-                    <% if ("To Receive".equals(status)) { %>
-                    <a class="btn btn-complete"
-                       href="<%=request.getContextPath()%>/adminOrders?action=complete&orderId=<%= orderId %>"
-                       onclick="return confirm('Force Complete?')">Done</a>
-                    <% } %>
+                    <% } else if ("To Receive".equals(status)) { %>
+                    <span style="font-size:12px; color:#aaa;">Wait for user</span>
 
-                    <% if ("Return Requested".equals(status)) { %>
-                    <button class="btn btn-reason" type="button"
-                            onclick="alert('Reason:\\n<%= safeReason %>')">Reason</button>
+                    <% } else if ("Return Requested".equals(status)) { %>
+                    <button class="btn-action btn-reason"
+                            onclick="showReason('<%= orderId %>', '<%= safeReason %>')">
+                        Reason
+                    </button>
 
-                    <a class="btn btn-complete"
-                       href="<%=request.getContextPath()%>/adminOrders?action=approveReturn&orderId=<%= orderId %>">Approve</a>
+                    <div style="margin-top:8px; display:flex; gap:8px;">
+                        <button class="btn-action btn-complete"
+                                onclick="approveReturn('<%= orderId %>')"
+                                title="Approve Return">
+                            &#10003; Approve
+                        </button>
 
-                    <a class="btn btn-reject"
-                       href="<%=request.getContextPath()%>/adminOrders?action=rejectReturn&orderId=<%= orderId %>">Reject</a>
-                    <% } %>
+                        <button class="btn-action btn-reject"
+                                onclick="rejectReturn('<%= orderId %>')"
+                                title="Reject Return">
+                            &#10005; Reject
+                        </button>
+                    </div>
 
-                    <% if (!"To Ship".equals(status) && !"To Receive".equals(status) && !"Return Requested".equals(status)) { %>
-                    <span style="color:#cbd5e1;">-</span>
+                    <% } else { %>
+                    <span style="color:#ccc;">-</span>
                     <% } %>
                 </td>
             </tr>
             <% } %>
 
             <% if (!hasOrders) { %>
-            <tr>
-                <td colspan="8" style="text-align:center; padding:24px; color:#94a3b8;">
-                    No orders found in this category.
-                </td>
-            </tr>
+            <tr><td colspan="7" style="padding:30px; text-align:center; color:#999;">No orders found.</td></tr>
             <% } %>
+            </tbody>
         </table>
     </div>
 </div>
+
+<script>
+    // 1. Show Reason Modal
+    function showReason(orderId, reasonText) {
+        Swal.fire({
+            title: '<strong>Return Request #' + orderId + '</strong>',
+            html: '<div style="text-align:left; background:#f9f9f9; padding:15px; border-radius:8px;">' +
+                '<b>Customer Reason:</b><br><br>' +
+                '<span style="white-space: pre-wrap; font-size:14px; color:#333;">' + reasonText + '</span>' +
+                '</div>',
+            showCloseButton: true,
+            focusConfirm: false,
+            confirmButtonText: 'Close',
+            confirmButtonColor: '#64748b'
+        });
+    }
+
+    // 2. Approve Return Modal (Renamed from Refund)
+    function approveReturn(orderId) {
+        Swal.fire({
+            title: 'Approve Return?',
+            text: "Are you sure you want to approve the return for Order #" + orderId + "?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#16a34a', // Green
+            cancelButtonColor: '#64748b', // Gray
+            confirmButtonText: 'Yes, Approve Return',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '<%=request.getContextPath()%>/adminOrders?action=approveReturn&orderId=' + orderId;
+            }
+        });
+    }
+
+    // 3. Reject Return Modal
+    function rejectReturn(orderId) {
+        Swal.fire({
+            title: 'Reject Return?',
+            text: "Are you sure you want to reject the return request for Order #" + orderId + "?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444', // Red
+            cancelButtonColor: '#64748b', // Gray
+            confirmButtonText: 'Yes, Reject Return',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '<%=request.getContextPath()%>/adminOrders?action=rejectReturn&orderId=' + orderId;
+            }
+        });
+    }
+</script>
