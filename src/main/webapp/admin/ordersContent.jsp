@@ -285,7 +285,7 @@
         });
     }
 
-    // 5. Confirm Reject Return
+    // 5.. Confirm Reject Return
     function confirmRejectReturn(orderId) {
         Swal.fire({
             title: 'Reject Return?',
