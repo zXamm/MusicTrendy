@@ -4,6 +4,7 @@ public class CartItem {
     private int cartItemId;
     private int productId;
     private String productName;
+    private String image; // <--- Added this field
     private double price;
     private int quantity;
     private double subtotal;
@@ -16,6 +17,11 @@ public class CartItem {
 
     public String getProductName() { return productName; }
     public void setProductName(String productName) { this.productName = productName; }
+
+    // --- NEW METHODS FOR IMAGE ---
+    public String getImage() { return image; }
+    public void setImage(String image) { this.image = image; }
+    // -----------------------------
 
     public double getPrice() { return price; }
     public void setPrice(double price) { this.price = price; }

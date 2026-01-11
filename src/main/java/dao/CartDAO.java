@@ -1,12 +1,10 @@
 package dao;
 
 import util.DBConnection;
-
-import java.sql.*;
 import model.CartItem;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
 
 public class CartDAO {
 
@@ -17,8 +15,6 @@ public class CartDAO {
         String insertSql = "INSERT INTO cart(user_id) VALUES(?)";
 
         try (Connection conn = DBConnection.getConnection()) {
-
-            // Check if cart exists
             PreparedStatement ps = conn.prepareStatement(selectSql);
             ps.setInt(1, userId);
             ResultSet rs = ps.executeQuery();
@@ -26,7 +22,6 @@ public class CartDAO {
             if (rs.next()) {
                 cartId = rs.getInt("cart_id");
             } else {
-                // Create cart
                 PreparedStatement insertPs = conn.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS);
                 insertPs.setInt(1, userId);
                 insertPs.executeUpdate();
@@ -35,11 +30,9 @@ public class CartDAO {
                     cartId = keys.getInt(1);
                 }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return cartId;
     }
 
@@ -50,7 +43,6 @@ public class CartDAO {
         String insertSql = "INSERT INTO cart_items(cart_id, product_id, quantity) VALUES (?, ?, 1)";
 
         try (Connection conn = DBConnection.getConnection()) {
-
             PreparedStatement checkPs = conn.prepareStatement(checkSql);
             checkPs.setInt(1, cartId);
             checkPs.setInt(2, productId);
@@ -67,16 +59,16 @@ public class CartDAO {
                 insertPs.setInt(2, productId);
                 insertPs.executeUpdate();
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    // Retrieve all items in the cart (Updated to include Image)
     public List<CartItem> getCartItems(int userId) {
         List<CartItem> items = new ArrayList<>();
 
-        String sql = "SELECT ci.cart_item_id, p.product_id, p.name, p.price, ci.quantity, (p.price * ci.quantity) AS subtotal " +
+        String sql = "SELECT ci.cart_item_id, p.product_id, p.name, p.image, p.price, ci.quantity, (p.price * ci.quantity) AS subtotal " +
                 "FROM cart_items ci " +
                 "JOIN cart c ON ci.cart_id = c.cart_id " +
                 "JOIN products p ON ci.product_id = p.product_id " +
@@ -93,6 +85,10 @@ public class CartDAO {
                 item.setCartItemId(rs.getInt("cart_item_id"));
                 item.setProductId(rs.getInt("product_id"));
                 item.setProductName(rs.getString("name"));
+
+                // Set Image (This fixes the 'cannot find symbol' error)
+                item.setImage(rs.getString("image"));
+
                 item.setPrice(rs.getDouble("price"));
                 item.setQuantity(rs.getInt("quantity"));
                 item.setSubtotal(rs.getDouble("subtotal"));
@@ -108,34 +104,46 @@ public class CartDAO {
 
     public void updateQuantity(int cartItemId, int quantity) {
         String sql = "UPDATE cart_items SET quantity = ? WHERE cart_item_id = ?";
-
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-
             ps.setInt(1, quantity);
             ps.setInt(2, cartItemId);
             ps.executeUpdate();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void removeItem(int cartItemId) {
+    public void removeCartItem(int cartItemId) {
         String sql = "DELETE FROM cart_items WHERE cart_item_id = ?";
-
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-
             ps.setInt(1, cartItemId);
             ps.executeUpdate();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    // Alias for removeCartItem to ensure compatibility
+    public void removeItem(int cartItemId) {
+        removeCartItem(cartItemId);
+    }
+
+    // Get total count of items in cart
     public int getCartCount(int userId) {
-        return userId;
+        int count = 0;
+        String sql = "SELECT SUM(ci.quantity) FROM cart_items ci JOIN cart c ON ci.cart_id = c.cart_id WHERE c.user_id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return count;
     }
 }
