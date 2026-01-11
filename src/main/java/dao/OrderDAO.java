@@ -184,13 +184,15 @@ public class OrderDAO {
     }
 
     //Admin marks as Shipped
+    //
+    // Admin marks as Shipped - AUTOMATIC Tracking Number
     public void markAsShipped(int orderId) throws Exception {
         Connection conn = DBConnection.getConnection();
 
-        //To generate the 5-Letter + 9-Digit code
+        // Automatically generate 5-Letter + 9-Digit code
         String trackingNum = generateTrackingNumber();
 
-        //Update DB with the new Tracking Number
+        // Update DB with the new Tracking Number
         String sql = "UPDATE orders SET status = 'To Receive', shipped_at = NOW(), tracking_number = ? WHERE order_id = ?";
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setString(1, trackingNum);
@@ -198,19 +200,19 @@ public class OrderDAO {
         ps.executeUpdate();
     }
 
-    //Generates "XXXXX123456789" Tracking ID
+    // Generates "XXXXX123456789" Tracking ID
     private String generateTrackingNumber() {
         String letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         String digits = "0123456789";
         StringBuilder sb = new StringBuilder();
         java.util.Random random = new java.util.Random();
 
-        //To generate 5 Random Letters
+        // Generate 5 Random Letters
         for (int i = 0; i < 5; i++) {
             sb.append(letters.charAt(random.nextInt(letters.length())));
         }
 
-        //To generate 9 Random Digits
+        // Generate 9 Random Digits
         for (int i = 0; i < 9; i++) {
             sb.append(digits.charAt(random.nextInt(digits.length())));
         }
