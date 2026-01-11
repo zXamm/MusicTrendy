@@ -1,8 +1,9 @@
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Map" %>
+<%@ page import="model.User" %>
 
 <%
-    //Retrieve data prepared by ReceiptServlet
+    // Retrieve data prepared by ReceiptServlet
     Integer orderId = (Integer) request.getAttribute("orderId");
     Double total = (Double) request.getAttribute("total");
     String status = (String) request.getAttribute("status");
@@ -10,6 +11,16 @@
     List<Map<String, Object>> items = (List<Map<String, Object>>) request.getAttribute("items");
 
     if (total == null) total = 0.0;
+
+    // Determine Redirect Link based on User Role
+    User sessionUser = (User) session.getAttribute("user");
+    String closeLink = "index.jsp";             // Default for customers
+    String closeText = "Return to Homepage";
+
+    if (sessionUser != null && "admin".equalsIgnoreCase(sessionUser.getRole())) {
+        closeLink = "adminDashboard";           // Redirect for admins
+        closeText = "Return to Admin Dashboard";
+    }
 %>
 
 <!DOCTYPE html>
@@ -17,7 +28,8 @@
 <head>
     <title>Invoice #<%= orderId %></title>
     <style>
-        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background: #eee; padding: 20px; color: #555; }
+        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background: #eee; padding: 20px; color: #555; }
 
         .invoice-box {
             max-width: 800px;
@@ -35,16 +47,20 @@
         .company-info { text-align: right; }
 
         .items-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        .items-table th { background: #eee; border-bottom: 1px solid #ddd; font-weight: bold; padding: 10px; text-align: left; }
-        .items-table td { padding: 10px; border-bottom: 1px solid #eee; }
-        .items-table tr.total td { border-top: 2px solid #333; font-weight: bold; font-size: 18px; color: #000; }
+        .items-table th { background: #eee; border-bottom: 1px solid #ddd; font-weight: bold;
+            padding: 10px; text-align: left; }
+        .items-table td { padding: 10px;
+            border-bottom: 1px solid #eee; }
+        .items-table tr.total td { border-top: 2px solid #333;
+            font-weight: bold; font-size: 18px; color: #000; }
 
         .btn-container { text-align: center; margin-top: 30px; }
-        .print-btn { background: #333; color: white; padding: 12px 25px; border: none; font-size: 16px; cursor: pointer; border-radius: 4px; }
+        .print-btn { background: #333; color: white; padding: 12px 25px; border: none;
+            font-size: 16px; cursor: pointer; border-radius: 4px; }
         .print-btn:hover { background: #555; }
         .close-link { display: block; margin-top: 10px; color: #777; text-decoration: none; }
 
-        /*Hides buttons when saving as PDF */
+        /* Hides buttons when saving as PDF */
         @media print {
             body { background: white; margin: 0; padding: 0; }
             .invoice-box { box-shadow: none; border: none; width: 100%; max-width: 100%; padding: 0; }
@@ -108,7 +124,7 @@
 
     <div class="btn-container">
         <button class="print-btn" onclick="window.print()">Print / Save as PDF</button>
-        <a href="javascript:window.close()" class="close-link">Close Window</a>
+        <a href="<%= closeLink %>" class="close-link"><%= closeText %></a>
     </div>
 
 </div>

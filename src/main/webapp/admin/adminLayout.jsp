@@ -43,13 +43,13 @@
             overflow: hidden;
         }
 
-        /* ✅ dark overlay for readability */
+        /* dark overlay for readability */
         .sidebar::before{
             content:"";
             position:absolute;
             inset:0;
-            background: rgba(15, 23, 42, 0.85); /* dark overlay */
-            backdrop-filter: blur(2px);         /* optional */
+            background: rgba(15, 23, 42, 0.4); /* dark overlay */
+            backdrop-filter: blur(2px);
         }
 
         /* ✅ make sidebar content appear above overlay */

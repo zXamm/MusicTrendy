@@ -27,16 +27,30 @@ public class CheckoutServlet extends HttpServlet {
         User user = (User) session.getAttribute("user");
         int userId = user.getUserId();
 
+        // Perform checkout
         int orderId = orderDAO.checkout(userId);
 
         if (orderId > 0) {
+            // ✅ SUCCESS: Set popup and redirect to Receipt
+            session.setAttribute("popup_type", "success");
+            session.setAttribute("popup_message", "Payment Successful! Order #" + orderId + " confirmed.");
             response.sendRedirect("receipt?orderId=" + orderId);
         } else if (orderId == -2) {
-            response.getWriter().println("❌ Not enough stock for one of your items!");
+            // ❌ FAIL: Stock Issue
+            session.setAttribute("popup_type", "error");
+            session.setAttribute("popup_message", "Checkout Failed: One or more items are out of stock!");
+            // Redirect back to home so user sees the error and cart is still there
+            response.sendRedirect("index.jsp");
         } else if (orderId == -3) {
-            response.getWriter().println("❌ Your cart is empty!");
+            // ❌ FAIL: Cart Empty
+            session.setAttribute("popup_type", "warning");
+            session.setAttribute("popup_message", "Your cart is empty.");
+            response.sendRedirect("index.jsp");
         } else {
-            response.getWriter().println("❌ Checkout failed! Try again.");
+            // ❌ FAIL: General Error
+            session.setAttribute("popup_type", "error");
+            session.setAttribute("popup_message", "Payment Failed. Please try again.");
+            response.sendRedirect("index.jsp");
         }
     }
 }
