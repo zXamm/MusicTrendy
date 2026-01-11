@@ -129,16 +129,19 @@
         .brand-pill { transition: all 0.3s ease; opacity: 0.8; background-color: #fff; }
         .brand-pill:hover { opacity: 1; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-color: var(--zoso-green) !important; transform: translateY(-2px); }
 
-        /* FOOTER */
-        footer { background-color: #222 !important; color: #fff !important; padding: 40px 0; border-top: 1px solid #444; margin-top: auto; }
-        .footer-link { color: #bbb; font-size: 0.85rem; display: block; margin-bottom: 8px; }
-        .footer-link:hover { color: var(--zoso-green); text-decoration: underline; }
+
 
         /*  NEW STYLES FOR SIDEBAR  */
         .cart-item-row { border-bottom: 1px solid #f0f0f0; padding: 12px 0; }
         .qty-btn { width: 24px; height: 24px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; border-radius: 4px; background: #eee; border: none; }
         .qty-btn:hover { background: #ddd; }
         .cart-total-box { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: auto; }
+
+        footer { background-color: #222 !important; color: #fff !important; padding: 40px 0; border-top: 1px solid #444; }
+        footer .text-muted { color: #999 !important; }
+        .footer-link { color: #bbb; font-size: 0.85rem; display: block; margin-bottom: 8px; }
+        .footer-link:hover { color: var(--zoso-green); text-decoration: underline; }
+
     </style>
 </head>
 <body>
@@ -345,20 +348,45 @@
         <div class="row">
             <div class="col-md-4 mb-4">
                 <h5 class="fw-bold mb-3">MUSIC TRENDY SDN BHD</h5>
-                <p class="small text-muted">MusicTrendy has been the epitome of music shops since its establishment in 2026.</p>
+                <p class="small text-muted">
+                    MusicTrendy has been the epitome of music shops since its establishment in 2026.
+                    We provide musical instruments, PA systems, and recording gear for beginners to pros.
+                </p>
+                <div class="mt-3">
+                    <a href="https://www.facebook.com" target="_blank" style="color: #bbb; margin-right: 10px;"><i class="fab fa-facebook fa-lg"></i></a>
+                    <a href="https://www.instagram.com" target="_blank" style="color: #bbb; margin-right: 10px;"><i class="fab fa-instagram fa-lg"></i></a>
+                    <a href="https://www.youtube.com" target="_blank" style="color: #bbb; margin-right: 10px;"><i class="fab fa-youtube fa-lg"></i></a>
+                </div>
+            </div>
+            <div class="col-md-2 mb-4">
+                <h5 class="fw-bold mb-3">Shop</h5>
+                <a href="#" class="footer-link">Guitars</a>
+                <a href="#" class="footer-link">Drums</a>
+                <a href="#" class="footer-link">Keyboards</a>
+                <a href="#" class="footer-link">Audio</a>
+            </div>
+            <div class="col-md-3 mb-4">
+                <h5 class="fw-bold mb-3">Store Policy</h5>
+                <a href="policies.jsp#refund" class="footer-link">Refund Policy</a>
+                <a href="policies.jsp#privacy" class="footer-link">Privacy Policy</a>
+                <a href="policies.jsp#terms" class="footer-link">Terms & Conditions</a>
             </div>
             <div class="col-md-3 mb-4">
                 <h5 class="fw-bold mb-3">Keep in Touch</h5>
                 <form action="subscribe" method="post">
                     <div class="input-group">
                         <input type="email" name="email" class="form-control" placeholder="email@example.com" required>
-                        <button class="btn" type="submit" style="background-color: var(--zoso-green); color: white;"><i class="fas fa-check"></i></button>
+                        <button class="btn" type="submit" style="background-color: var(--zoso-green); color: white;">
+                            <i class="fas fa-check"></i>
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
         <hr>
-        <div class="text-center small text-muted">&copy; 2026 MusicTrendy. All Rights Reserved.</div>
+        <div class="text-center small text-muted">
+            &copy; 2026 MusicTrendy. All Rights Reserved.
+        </div>
     </div>
 </footer>
 
