@@ -1,19 +1,19 @@
-# 🎵 MusicTrendy - Premium Musical Instrument Store
+#  MusicTrendy - Premium Musical Instrument Store
 
 > **Course:** CAT201 Integrated Software Development Workshop  
 > **Session:** 2025/2026  
 > **School:** School of Computer Sciences, Universiti Sains Malaysia
 
-## 📖 Introduction
+##  Introduction
 **MusicTrendy** is a web-based e-commerce application designed to sell musical instruments online. It provides a seamless shopping experience for musicians and a robust management system for store administrators. 
 
 This project was built **entirely using standard Java Web technologies** (Servlets, JSP, JDBC) without relying on high-level enterprise frameworks like Spring or Struts, demonstrating a deep understanding of core web development concepts.
 
 ---
 
-## 🚀 Features
+##  Features
 
-### 🛒 Customer Features
+###  Customer Features
 * **User Authentication:** Secure Registration and Login system.
 * **Product Discovery:**
     * Interactive Hero Carousel showcasing new arrivals.
@@ -27,7 +27,7 @@ This project was built **entirely using standard Java Web technologies** (Servle
     * Multiple payment options: Online Banking, Credit Card, and COD.
 * **Order History:** Track order status (To Ship, To Receive, Completed).
 
-### 🛡️ Admin Features
+###  Admin Features
 * **Dashboard Analytics:** Real-time overview of Total Orders, Total Customers, and Top Selling Products.
 * **Inventory Management:** * Add, Edit, and Delete products.
     * Upload product images.
@@ -35,7 +35,7 @@ This project was built **entirely using standard Java Web technologies** (Servle
 
 ---
 
-## 🛠️ Technology Stack
+##  Technology Stack
 
 * **Backend:** Java (JDK 17+), Java Servlets, JSP (JavaServer Pages).
 * **Frontend:** HTML5, CSS3, **Bootstrap 5.3**, JavaScript, FontAwesome 6.
@@ -46,7 +46,7 @@ This project was built **entirely using standard Java Web technologies** (Servle
 
 ---
 
-## ⚙️ Installation & Setup
+##  Installation & Setup
 
 ### 1. Prerequisites
 Ensure you have the following installed:
@@ -92,7 +92,6 @@ MusicTrendy
 │   │   └── webapp
 │   │       ├── admin        # Admin JSPs (Dashboard, Product Mgmt)
 │   │       ├── images       # Product and UI Images
-│   │       ├── WEB-INF      # Web Configuration
 │   │       ├── index.jsp    # Homepage
 │   │       ├── products.jsp # Product Catalog
 │   │       ├── payment.jsp  # Interactive Payment Page
