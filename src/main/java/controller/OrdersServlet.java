@@ -31,7 +31,7 @@ public class OrdersServlet extends HttpServlet {
         try {
             ResultSet orders = orderDAO.getOrdersByUser(userId);
             request.setAttribute("orders", orders);
-            request.getRequestDispatcher("orders.jsp").forward(request, response);
+            request.getRequestDispatcher("ordersContent.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
             response.getWriter().println("❌ Cannot load order history.");

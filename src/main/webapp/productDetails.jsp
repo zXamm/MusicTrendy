@@ -21,7 +21,7 @@
 
 <body>
 
-<!-- ✅ NAVBAR (same as products.jsp) -->
+<!-- ✅ NAVBAR (same as productsContent.jsp) -->
 <div style="
     display:flex;
     justify-content:space-between;

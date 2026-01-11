@@ -14,28 +14,21 @@ import java.util.List;
 @WebServlet("/adminProducts")
 public class AdminProductsServlet extends HttpServlet {
 
-    private ProductDAO productDAO = new ProductDAO();
-
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("user") == null) {
-            response.sendRedirect("login.jsp");
-            return;
-        }
+        // ✅ Load products from DB using DAO
+        ProductDAO productDAO = new ProductDAO();
+        List<Product> products = productDAO.getAllProducts();
 
-        User user = (User) session.getAttribute("user");
-        if (!"admin".equals(user.getRole())) {
-            response.sendRedirect("products");
-            return;
-        }
+        // ✅ Put into request
+        request.setAttribute("products", products);
 
-        List<Product> productList = productDAO.getAllProducts();
-        request.setAttribute("products", productList);
-
-        request.getRequestDispatcher("admin/products.jsp").forward(request, response);
+        // ✅ Forward to layout (NOT directly to productsContent.jsp)
+        request.getRequestDispatcher("/admin/adminLayout.jsp?page=productsContent.jsp")
+                .forward(request, response);
     }
 }
+
     

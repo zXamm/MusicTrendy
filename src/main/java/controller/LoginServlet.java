@@ -29,7 +29,7 @@ public class LoginServlet extends HttpServlet {
 
             // ✅ redirect based on role
             if ("admin".equals(user.getRole())) {
-                response.sendRedirect("admin/dashboard.jsp");  // we'll create later
+                response.sendRedirect(request.getContextPath() + "/admin/adminLayout.jsp?page=dashboardContent.jsp");
             } else {
                 response.sendRedirect("products");
             }

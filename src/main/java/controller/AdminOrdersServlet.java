@@ -44,7 +44,8 @@ public class AdminOrdersServlet extends HttpServlet {
             request.setAttribute("totalOrders", totalOrders);
             request.setAttribute("bestProduct", bestProduct);
 
-            request.getRequestDispatcher("admin/orders.jsp").forward(request, response);
+            request.getRequestDispatcher("/admin/adminLayout.jsp?page=ordersContent.jsp")
+                    .forward(request, response);
 
         } catch (Exception e) {
             e.printStackTrace();
