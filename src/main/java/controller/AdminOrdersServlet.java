@@ -64,7 +64,8 @@ public class AdminOrdersServlet extends HttpServlet {
             request.setAttribute("bestProduct", bestProduct);
             request.setAttribute("currentStatus", status);
 
-            request.getRequestDispatcher("admin/orders.jsp").forward(request, response);
+            request.getRequestDispatcher("/admin/adminLayout.jsp?page=ordersContent.jsp")
+                    .forward(request, response);
 
         } catch (Exception e) {
             e.printStackTrace();

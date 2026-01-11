@@ -178,4 +178,27 @@ public class ProductDAO {
         }
         return false;
     }
+
+    public int getTotalProducts() throws Exception {
+        String sql = "SELECT COUNT(*) FROM products";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) return rs.getInt(1);
+        }
+        return 0;
+    }
+
+    public int getLowStockCount(int threshold) throws Exception {
+        String sql = "SELECT COUNT(*) FROM products WHERE quantity <= ?";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, threshold);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getInt(1);
+            }
+        }
+        return 0;
+    }
+
 }

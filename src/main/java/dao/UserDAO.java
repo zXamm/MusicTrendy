@@ -69,4 +69,15 @@ public class UserDAO {
         }
         return false;
     }
+
+    public int getTotalCustomers() throws Exception {
+        String sql = "SELECT COUNT(*) FROM users WHERE role = 'customer'";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) return rs.getInt(1);
+        }
+        return 0;
+    }
+
 }

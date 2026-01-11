@@ -80,6 +80,8 @@
 
         .back-link { display: inline-block; margin-top: 20px; text-decoration: none; color: #777; font-weight: 500; }
         .back-link:hover { color: var(--primary-green); }
+
+
     </style>
 
     <script>
@@ -163,6 +165,7 @@
 
                 <% if ("Completed".equals(status)) { %>
                 <button class="btn btn-red" onclick="promptReturn(<%= orderId %>)">Return Item</button>
+
                 <% } %>
 
                 <% if ("Return Requested".equals(status)) { %> <span style="color:#ef6c00; font-size:13px; font-weight:bold;">Wait for Approval</span> <% } %>
