@@ -67,8 +67,23 @@
             color: #fff;
         }
         .brand{
-            color: #ffffff;
-            text-shadow: 0 2px 12px rgba(0,0,0,0.7);
+            display:flex;
+            align-items:center;
+            gap:12px;
+            margin-bottom: 28px;
+            justify-content: center;
+
+        }
+
+        /* logo image */
+        .brand-logo{
+            width: 170px;          /* adjust size */
+            max-width: 100%;
+            height: auto;
+            object-fit: contain;
+
+            /* make it pop on dark sidebar */
+            filter: invert(1) brightness(2) drop-shadow(0 8px 16px rgba(0,0,0,0.35));
         }
 
         .brand span{ font-size:26px; }
@@ -82,6 +97,7 @@
             display:flex;
             align-items:center;
             gap:12px;
+            justify-content: center;
 
             width: 100%;                 /* ✅ full button width */
             box-sizing: border-box;
@@ -89,6 +105,7 @@
             padding:12px 14px;
             margin:10px 0;
             border-radius:14px;
+
 
             text-decoration:none;
             color:#fff;
@@ -222,13 +239,16 @@
     <!-- Sidebar -->
     <div class="sidebar">
         <div class="brand">
-            <span>🎵</span> MusicTrendy
+            <img class="brand-logo"
+                 src="<%=request.getContextPath()%>/images/MusicTrendyLogo.png"
+                 alt="MusicTrendy Logo">
         </div>
 
+
         <div class="menu">
-            <a href="<%=request.getContextPath()%>/adminDashboard">🏠 <span>Dashboard</span></a>
-            <a href="<%=request.getContextPath()%>/adminProducts">🛒 <span>Products</span></a>
-            <a href="<%=request.getContextPath()%>/adminOrders">📦 <span>Orders</span></a>
+            <a href="<%=request.getContextPath()%>/adminDashboard" > <span>Dashboard</span></a>
+            <a href="<%=request.getContextPath()%>/adminProducts"> <span>Products</span></a>
+            <a href="<%=request.getContextPath()%>/adminOrders"> <span>Orders</span></a>
 
         </div>
 
