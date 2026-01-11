@@ -6,10 +6,10 @@
 <%@ page import="model.User" %>
 
 <%
-    // --- 1. EXISTING PRODUCT LOGIC ---
+    //  1. EXISTING PRODUCT LOGIC
     List<Product> products = (List<Product>) request.getAttribute("products");
 
-    // --- 2. NEW SIDEBAR CART LOGIC ---
+    //  2. NEW SIDEBAR CART LOGIC
     List<CartItem> sidebarItems = null;
     double sidebarTotal = 0.0;
     User sidebarUser = (User) session.getAttribute("user");
@@ -23,7 +23,7 @@
         }
     }
 
-    // --- 3. POPUP FIX (Clear message immediately) ---
+    //  3. POPUP FIX (Clear message immediately)
     String popupType = (String) session.getAttribute("popup_type");
     String popupMessage = (String) session.getAttribute("popup_message");
     if (popupType != null) {
@@ -134,7 +134,7 @@
         .footer-link { color: #bbb; font-size: 0.85rem; display: block; margin-bottom: 8px; }
         .footer-link:hover { color: var(--zoso-green); text-decoration: underline; }
 
-        /* --- NEW STYLES FOR SIDEBAR --- */
+        /*  NEW STYLES FOR SIDEBAR  */
         .cart-item-row { border-bottom: 1px solid #f0f0f0; padding: 12px 0; }
         .qty-btn { width: 24px; height: 24px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; border-radius: 4px; background: #eee; border: none; }
         .qty-btn:hover { background: #ddd; }

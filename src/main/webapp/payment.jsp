@@ -337,7 +337,7 @@
         }
     }
 
-    // --- Payment Method Logic ---
+    //  Payment Method Logic
     let currentMethod = 'online';
     let selectedBank = 'Maybank2u';
 

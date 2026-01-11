@@ -88,7 +88,7 @@
         .back-link { display: inline-block; margin-top: 20px; text-decoration: none; color: #777; font-weight: 500; }
         .back-link:hover { color: var(--primary-green); }
 
-        /* --- MODAL STYLES (Kept for Return Reason) --- */
+        /*  MODAL STYLES (Kept for Return Reason)  */
         .modal {
             display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
             overflow: hidden; background-color: rgba(0,0,0,0.5); backdrop-filter: blur(3px);
@@ -124,7 +124,7 @@
     <script>
         let currentReturnOrderId = null;
 
-        // --- Return Reason Modal Functions ---
+        //  Return Reason Modal Functions
         function openReturnModal(orderId) {
             currentReturnOrderId = orderId;
             document.getElementById("returnModal").classList.add("show");
@@ -148,7 +148,7 @@
             }
         }
 
-        // --- NEW: Confirm Receipt Function with SweetAlert2 ---
+        //  NEW: Confirm Receipt Function with SweetAlert2
         function confirmReceipt(orderId) {
             Swal.fire({
                 title: 'Received your Order?',

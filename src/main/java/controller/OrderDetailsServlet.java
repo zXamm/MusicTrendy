@@ -31,7 +31,7 @@ public class OrderDetailsServlet extends HttpServlet {
         int orderId = Integer.parseInt(request.getParameter("orderId"));
 
         try {
-            // ✅ secure: must belong to this user
+            //  secure: must belong to this user
             ResultSet order = orderDAO.getOrderByUser(orderId, userId);
             ResultSet items = orderDAO.getOrderItems(orderId);
 

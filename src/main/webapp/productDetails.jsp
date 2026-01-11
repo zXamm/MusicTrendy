@@ -8,7 +8,7 @@
 <%
     Product p = (Product) request.getAttribute("product");
 
-    // --- SIDEBAR DATA ---
+    //  SIDEBAR DATA
     List<CartItem> sidebarItems = null;
     double sidebarTotal = 0.0;
     User sidebarUser = (User) session.getAttribute("user");
@@ -22,7 +22,7 @@
         }
     }
 
-    // --- POPUP FIX ---
+    //  POPUP FIX
     String popupType = (String) session.getAttribute("popup_type");
     String popupMessage = (String) session.getAttribute("popup_message");
     if (popupType != null) {

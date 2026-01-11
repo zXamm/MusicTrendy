@@ -20,7 +20,7 @@ public class TestDBServlet extends HttpServlet {
         response.setContentType("text/plain");
 
         if (conn != null) {
-            response.getWriter().println("✅ Database Connected Successfully!");
+            response.getWriter().println(" Database Connected Successfully!");
         } else {
             response.getWriter().println("❌ Database Connection Failed.");
         }
