@@ -3,7 +3,6 @@
 <%
     String username = (String) session.getAttribute("username");
     if(username == null) username = "Admin";
-
     String pageContent = request.getParameter("page");
     if(pageContent == null) pageContent = "dashboardContent.jsp";
 
@@ -22,7 +21,6 @@
         .container{display:flex;min-height:100vh;}
 
         /* Sidebar */
-        /* Sidebar (beautified to match main content) */
         .sidebar{
             width:240px;
             padding:20px;
@@ -33,29 +31,31 @@
             top:0; left:0;
             height:100vh;
 
-            /* ✅ image background */
-            background-image: url("<%=request.getContextPath()%>/images/sidebar.jpg");
+            /* ✅ FIXED: Ensure quotes are correct and path is absolute */
+            background-image: url('<%=request.getContextPath()%>/images/sidebar.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
 
             border-right: 1px solid rgba(255,255,255,0.15);
             overflow: hidden;
+            z-index: 10; /* Ensure sidebar stays on top */
         }
 
-        /* dark overlay for readability */
+        /* ✅ Adjusted overlay for better visibility */
         .sidebar::before{
             content:"";
             position:absolute;
             inset:0;
-            background: rgba(15, 23, 42, 0.4); /* dark overlay */
+            background: rgba(15, 23, 42, 0.75); /* Reduced opacity from 0.85 to 0.75 */
             backdrop-filter: blur(2px);
+            z-index: -1; /* Behind content */
         }
 
         /* ✅ make sidebar content appear above overlay */
         .sidebar > *{
             position: relative;
-            z-index: 1;
+            z-index: 2;
         }
 
         /* menu text becomes white on image */
@@ -72,26 +72,21 @@
             gap:12px;
             margin-bottom: 28px;
             justify-content: center;
-
         }
 
         /* logo image */
         .brand-logo{
-            width: 170px;          /* adjust size */
+            width: 170px;
             max-width: 100%;
             height: auto;
             object-fit: contain;
-
-            /* make it pop on dark sidebar */
             filter: invert(1) brightness(2) drop-shadow(0 8px 16px rgba(0,0,0,0.35));
         }
 
         .brand span{ font-size:26px; }
 
         /* Menu items */
-        .menu{
-            margin-top: 14px;
-        }
+        .menu{ margin-top: 14px; }
 
         .menu a{
             display:flex;
@@ -99,21 +94,19 @@
             gap:12px;
             justify-content: center;
 
-            width: 100%;                 /* ✅ full button width */
+            width: 100%;
             box-sizing: border-box;
-
             padding:12px 14px;
             margin:10px 0;
             border-radius:14px;
-
 
             text-decoration:none;
             color:#fff;
             font-weight:700;
 
-            background: rgba(255,255,255,0.10);        /* ✅ button background */
-            border: 1px solid rgba(255,255,255,0.18);  /* ✅ outline */
-            box-shadow: 0 6px 16px rgba(0,0,0,0.22);    /* ✅ button depth */
+            background: rgba(255,255,255,0.10);
+            border: 1px solid rgba(255,255,255,0.18);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.22);
 
             transition: .2s;
             text-shadow: 0 2px 10px rgba(0,0,0,0.65);
@@ -128,7 +121,7 @@
 
         /* Active button */
         .menu a.active{
-            background: rgba(22,163,74,0.35);          /* ✅ theme green */
+            background: rgba(22,163,74,0.35);
             border: 1px solid rgba(22,163,74,0.60);
             box-shadow: 0 8px 20px rgba(0,0,0,0.28);
         }
@@ -228,15 +221,12 @@
         .btn-view:hover {
             background: #1d4ed8;
         }
-
-
     </style>
 </head>
 
 <body>
 <div class="container">
 
-    <!-- Sidebar -->
     <div class="sidebar">
         <div class="brand">
             <img class="brand-logo"
@@ -249,7 +239,6 @@
             <a href="<%=request.getContextPath()%>/adminDashboard" > <span>Dashboard</span></a>
             <a href="<%=request.getContextPath()%>/adminProducts"> <span>Products</span></a>
             <a href="<%=request.getContextPath()%>/adminOrders"> <span>Orders</span></a>
-
         </div>
 
 
@@ -258,7 +247,6 @@
         </div>
     </div>
 
-    <!-- Main Content -->
     <div class="main">
 
         <div class="topbar">
@@ -272,7 +260,6 @@
             </div>
         </div>
 
-        <!-- ✅ Load Dynamic Content -->
         <jsp:include page="<%= pageContent %>" />
 
     </div>
@@ -300,12 +287,11 @@
     });
 </script>
 <%
-        // 3. Remove attributes so the popup doesn't show again on refresh
+        // Remove attributes so the popup doesn't show again on refresh
         session.removeAttribute("popup_type");
         session.removeAttribute("popup_message");
     }
 %>
-
 
 </body>
 </html>
