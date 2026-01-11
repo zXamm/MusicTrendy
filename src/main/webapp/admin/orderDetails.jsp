@@ -1,6 +1,5 @@
 <%@ page import="java.sql.ResultSet" %>
 <%@ page import="model.User" %>
-
 <%
     User user = (User) session.getAttribute("user");
     if (user == null || !"admin".equals(user.getRole())) {
@@ -8,77 +7,87 @@
         return;
     }
 
-    ResultSet order = (ResultSet) request.getAttribute("order");
-    ResultSet items = (ResultSet) request.getAttribute("items");
+    ResultSet order = (ResultSet) request.getAttribute("order"); //Ensure AdminOrderDetailsServlet sets this
+    ResultSet items = (ResultSet) request.getAttribute("items"); //Ensure AdminOrderDetailsServlet sets this
 
     int orderId = 0;
     double total = 0;
     String status = "";
-    String date = "";
-    String customer = "";
+    String customerName = "";
+    String dateOrdered = "";
+    String dateShipped = "N/A";
+    String dateDelivered = "N/A";
 
-    if(order != null && order.next()) {
+    if (order != null && order.next()) {
         orderId = order.getInt("order_id");
         total = order.getDouble("total_amount");
         status = order.getString("status");
-        date = order.getString("created_at");
-        customer = order.getString("customer_name");
+        customerName = order.getString("customer_name");
+        dateOrdered = order.getString("created_at");
+        if (order.getString("shipped_at") != null) dateShipped = order.getString("shipped_at");
+        if (order.getString("delivered_at") != null) dateDelivered = order.getString("delivered_at");
     }
 %>
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Admin - Order Details</title>
+    <title>Admin - Order #<%= orderId %></title>
     <style>
-        body { font-family: Arial; margin: 20px; }
-        .box { max-width: 800px; margin:auto; border:1px solid #ccc; padding:20px; border-radius:10px; }
-        table { width:100%; border-collapse: collapse; margin-top:15px; }
-        th, td { padding:10px; border:1px solid #ccc; text-align:center; }
-        th { background:#f5f5f5; }
-        .total { margin-top:15px; font-size:18px; font-weight:bold; text-align:right; }
-        .btn { display:inline-block; padding:10px 15px; background:#333; color:white; border-radius:6px; text-decoration:none; margin-top:15px; }
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f4f4f4; }
+        .container { max-width: 900px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        .box { padding: 15px; background: #f9f9f9; border: 1px solid #ddd; border-radius: 6px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 10px; border-bottom: 1px solid #eee; text-align: left; }
+        th { background: #333; color: white; }
+        .status { display: inline-block; padding: 5px 10px; border-radius: 4px; font-weight: bold; background: #eee; }
+        .status.Completed { background: #d4edda; color: #155724; }
+        .status.Return { background: #f8d7da; color: #721c24; }
     </style>
 </head>
 <body>
 
-<div class="box">
+<div class="container">
+    <h2>Order Management: #<%= orderId %></h2>
 
-    <h2> Order Details (Admin View)</h2>
+    <div class="info-grid">
+        <div class="box">
+            <h3>Customer Info</h3>
+            <p><strong>Name:</strong> <%= customerName %></p>
+            <p><strong>Current Status:</strong> <span class="status <%= status.contains("Return") ? "Return" : status %>"><%= status %></span></p>
+        </div>
+        <div class="box">
+            <h3>Timeline</h3>
+            <p><strong>Ordered:</strong> <%= dateOrdered %></p>
+            <p><strong>Shipped:</strong> <%= dateShipped %></p>
+            <p><strong>Delivered:</strong> <%= dateDelivered %></p>
+        </div>
+    </div>
 
-    <p><b>Order ID:</b> <%= orderId %></p>
-    <p><b>Customer:</b> <%= customer %></p>
-    <p><b>Status:</b> <%= status %></p>
-    <p><b>Date:</b> <%= date %></p>
-
+    <h3>Order Items</h3>
     <table>
         <tr>
             <th>Product</th>
-            <th>Unit Price</th>
-            <th>Quantity</th>
-            <th>Subtotal</th>
+            <th>Qty</th>
+            <th>Price</th>
+            <th>Total</th>
         </tr>
-
         <%
-            while(items != null && items.next()) {
-                String name = items.getString("name");
-                double price = items.getDouble("unit_price");
-                int qty = items.getInt("quantity");
-                double subtotal = price * qty;
+            while (items != null && items.next()) {
+                double pTotal = items.getDouble("unit_price") * items.getInt("quantity");
         %>
         <tr>
-            <td><%= name %></td>
-            <td><%= price %></td>
-            <td><%= qty %></td>
-            <td><%= subtotal %></td>
+            <td><%= items.getString("name") %></td>
+            <td><%= items.getInt("quantity") %></td>
+            <td>RM <%= String.format("%.2f", items.getDouble("unit_price")) %></td>
+            <td>RM <%= String.format("%.2f", pTotal) %></td>
         </tr>
         <% } %>
     </table>
 
-    <div class="total">Total: RM <%= total %></div>
-
-    <a class="btn" href="<%= request.getContextPath() %>/adminOrders"> Back</a>
-
+    <br>
+    <a href="adminOrders" style="text-decoration:none; color:black; font-weight:bold;">&larr; Back to Dashboard</a>
 </div>
 
 </body>

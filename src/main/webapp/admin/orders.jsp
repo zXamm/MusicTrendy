@@ -9,10 +9,16 @@
     }
 
     ResultSet orders = (ResultSet) request.getAttribute("orders");
-    double totalSales = (double) request.getAttribute("totalSales");
-    int totalOrders = (int) request.getAttribute("totalOrders");
-    ResultSet bestProduct = (ResultSet) request.getAttribute("bestProduct");
+    String currentStatus = (String) request.getAttribute("currentStatus");
+    if (currentStatus == null) currentStatus = "All";
 
+    Double totalSalesObj = (Double) request.getAttribute("totalSales");
+    double totalSales = (totalSalesObj != null) ? totalSalesObj : 0.0;
+
+    Integer totalOrdersObj = (Integer) request.getAttribute("totalOrders");
+    int totalOrders = (totalOrdersObj != null) ? totalOrdersObj : 0;
+
+    ResultSet bestProduct = (ResultSet) request.getAttribute("bestProduct");
     String bestName = "N/A";
     int bestSold = 0;
     if (bestProduct != null && bestProduct.next()) {
@@ -24,77 +30,146 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Admin - Orders Dashboard</title>
+    <title>Admin Order Management</title>
     <style>
-        body { font-family: Arial; margin: 20px; }
-        .cards { display:flex; gap:20px; margin-bottom:20px; }
-        .card { flex:1; padding:15px; border:1px solid #ccc; border-radius:10px; background:#f9f9f9; }
-        table { width:100%; border-collapse: collapse; margin-top:15px; }
-        th, td { padding:10px; border:1px solid #ccc; text-align:center; }
-        th { background:#f5f5f5; }
-        a { text-decoration:none; padding:6px 10px; background:#0b5ed7; color:white; border-radius:6px; }
-        .back { display:inline-block; padding:10px 15px; background:#333; color:white; border-radius:6px; margin-top:15px; }
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; }
+
+        .cards { display: flex; gap: 20px; margin-bottom: 30px; }
+        .card { flex: 1; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center; }
+        .card h3 { margin: 0 0 10px; color: #555; font-size: 16px; }
+        .card p { margin: 0; font-size: 24px; font-weight: bold; color: #333; }
+
+        .tabs { margin-bottom: 20px; border-bottom: 2px solid #ccc; }
+        .tab { display: inline-block; padding: 10px 20px; text-decoration: none; color: #555; background: #e0e0e0; margin-right: 5px; border-radius: 5px 5px 0 0; }
+        .tab.active { background-color: #333; color: white; }
+
+        table { width: 100%; border-collapse: collapse; background: white; }
+        th, td { padding: 12px; border: 1px solid #ddd; text-align: center; }
+        th { background: #333; color: white; }
+
+        .btn { padding: 6px 12px; text-decoration: none; border-radius: 4px; color: white; font-size: 13px; display: inline-block; margin: 2px; cursor: pointer; border: none; }
+        .btn-ship { background-color: #007bff; }
+        .btn-complete { background-color: #28a745; }
+        .btn-view { background-color: #6c757d; }
+        .btn-reason { background-color: #ffc107; color: black; font-weight: bold; } /* New Button Style */
+        .btn-dark { background-color: #222; }
+
+        .tracking-code { font-family: "Courier New", monospace; font-weight: bold; color: #007bff; letter-spacing: 1px; }
     </style>
 </head>
 <body>
 
-<h2> Admin Orders & Sales Dashboard</h2>
+<h2>Admin Dashboard</h2>
 
 <div class="cards">
     <div class="card">
         <h3>Total Sales</h3>
-        <p><b>RM <%= String.format("%.2f", totalSales) %></b></p>
+        <p>RM <%= String.format("%.2f", totalSales) %></p>
     </div>
-
     <div class="card">
         <h3>Total Orders</h3>
-        <p><b><%= totalOrders %></b></p>
+        <p><%= totalOrders %></p>
     </div>
-
     <div class="card">
-        <h3>Best Selling Product</h3>
-        <p><b><%= bestName %></b></p>
-        <p>Sold: <%= bestSold %></p>
+        <h3>Best Seller</h3>
+        <p><%= bestName %> <span style="font-size:14px; color:grey;">(<%= bestSold %> sold)</span></p>
     </div>
 </div>
 
-<h3> All Customer Orders</h3>
+<h3>Order Management</h3>
+
+<div class="tabs">
+    <a href="adminOrders?status=All" class="tab <%= "All".equals(currentStatus) ? "active" : "" %>">All</a>
+    <a href="adminOrders?status=To Ship" class="tab <%= "To Ship".equals(currentStatus) ? "active" : "" %>">To Ship</a>
+    <a href="adminOrders?status=To Receive" class="tab <%= "To Receive".equals(currentStatus) ? "active" : "" %>">To Receive</a>
+    <a href="adminOrders?status=Completed" class="tab <%= "Completed".equals(currentStatus) ? "active" : "" %>">Completed</a>
+    <a href="adminOrders?status=Return/Refund" class="tab <%= "Return/Refund".equals(currentStatus) ? "active" : "" %>">Return Requests</a>
+</div>
 
 <table>
     <tr>
-        <th>Order ID</th>
+        <th>ID</th>
         <th>Customer</th>
-        <th>Total (RM)</th>
-        <th>Status</th>
+        <th>Total</th>
         <th>Date</th>
+        <th>Receipt</th>
+        <th>Tracking No.</th>
+        <th>Status</th>
         <th>Action</th>
     </tr>
 
     <%
+        boolean hasOrders = false;
         while (orders != null && orders.next()) {
+            hasOrders = true;
             int orderId = orders.getInt("order_id");
             String customer = orders.getString("customer_name");
             double total = orders.getDouble("total_amount");
             String status = orders.getString("status");
             String date = orders.getString("created_at");
+
+            String tracking = orders.getString("tracking_number");
+            if (tracking == null) tracking = "-";
+
+            //Fetch Reason safely (handle quotes for JS alert)
+            String returnReason = orders.getString("return_reason");
+            if (returnReason == null) returnReason = "No reason provided";
+            String safeReason = returnReason.replace("'", "\\'").replace("\"", "\\\"");
+
+            String statusColor = "orange";
+            if ("Completed".equals(status)) { statusColor = "green"; }
+            else if ("Refunded".equals(status)) { statusColor = "red"; }
     %>
     <tr>
         <td><%= orderId %></td>
         <td><%= customer %></td>
-        <td><%= total %></td>
-        <td><%= status %></td>
+        <td>RM <%= String.format("%.2f", total) %></td>
         <td><%= date %></td>
+
+        <td><a href="receipt?orderId=<%= orderId %>" target="_blank" class="btn btn-dark">View</a></td>
+
         <td>
-            <a href="<%= request.getContextPath() %>/adminOrderDetails?orderId=<%= orderId %>">
-                View
-            </a>
+            <% if (!"-".equals(tracking)) { %>
+            <span class="tracking-code"><%= tracking %></span>
+            <% } else { %> <span style="color:#ccc;">-</span> <% } %>
+        </td>
+
+        <td>
+            <span style="font-weight:bold; color: <%= statusColor %>;">
+                <%= status %>
+            </span>
+        </td>
+
+        <td>
+            <% if ("To Ship".equals(status)) { %>
+            <a href="adminOrders?action=ship&orderId=<%= orderId %>" class="btn btn-ship" onclick="return confirm('Mark this order as Shipped?')">Ship Order</a>
+            <% } %>
+
+            <% if ("To Receive".equals(status)) { %>
+            <a href="adminOrders?action=complete&orderId=<%= orderId %>" class="btn btn-complete" onclick="return confirm('Force complete this order?')">Completed</a>
+            <% } %>
+
+            <% if ("Return Requested".equals(status)) { %>
+            <button class="btn btn-reason" onclick="alert('Customer Reason:\n\n<%= safeReason %>')">View Reason</button>
+
+            <a href="adminOrders?action=approveReturn&orderId=<%= orderId %>" class="btn btn-complete" onclick="return confirm('Approve Refund?')">Approve</a>
+            <a href="adminOrders?action=rejectReturn&orderId=<%= orderId %>" class="btn btn-view" style="background-color:red;" onclick="return confirm('Reject Return?')">Reject</a>
+            <% } %>
+
+            <% if (!"To Ship".equals(status) && !"To Receive".equals(status) && !"Return Requested".equals(status)) { %>
+            <span style="color:#ccc;">-</span>
+            <% } %>
         </td>
     </tr>
     <% } %>
 
+    <% if (!hasOrders) { %>
+    <tr><td colspan="8">No orders found for this status.</td></tr>
+    <% } %>
 </table>
 
-<a class="back" href="<%= request.getContextPath() %>/admin/dashboard.jsp"> Back</a>
+<br>
+<a href="<%= request.getContextPath() %>/admin/dashboard.jsp" style="color:black; font-weight:bold;">&larr; Back to Dashboard</a>
 
 </body>
 </html>
