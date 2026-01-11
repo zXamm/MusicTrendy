@@ -8,28 +8,78 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My Orders</title>
+    <title>My Orders | MusicTrendy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; }
-        h2 { color: #333; }
+        /* THEME VARIABLES */
+        :root {
+            --primary-green: #558B2F;
+            --primary-hover: #437d26;
+            --price-red: #d32f2f;
+            --bg-gray: #f9f9f9;
+            --text-dark: #333;
+            --card-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
 
-        .tabs { margin-bottom: 20px; border-bottom: 2px solid #ddd; }
-        .tab { display: inline-block; padding: 10px 20px; text-decoration: none; color: #555; border-radius: 5px 5px 0 0; }
-        .tab:hover { background-color: #e9e9e9; }
-        .tab.active { background-color: #0b5ed7; color: white; font-weight: bold; }
+        body { font-family: 'Roboto', sans-serif; margin: 0; background-color: var(--bg-gray); color: var(--text-dark); }
 
-        table { width: 100%; border-collapse: collapse; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        th, td { padding: 12px; border-bottom: 1px solid #ddd; text-align: center; }
-        th { background: #f8f9fa; color: #333; }
-        tr:hover { background-color: #f1f1f1; }
+        /* HEADER */
+        .page-header { background: white; padding: 20px 40px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 30px; display: flex; align-items: center; justify-content: space-between; }
+        .page-title { margin: 0; font-size: 24px; font-weight: 700; color: #222; text-transform: uppercase; letter-spacing: 1px; }
 
-        .btn { padding: 8px 12px; text-decoration: none; border-radius: 4px; font-size: 14px; cursor: pointer; border: none; display: inline-block; }
-        .btn-blue { background-color: #0b5ed7; color: white; }
-        .btn-green { background-color: #28a745; color: white; }
-        .btn-dark { background-color: #222; color: white; }
+        /* CONTAINER */
+        .container { max-width: 1100px; margin: 0 auto 50px auto; background: white; padding: 30px; border-radius: 8px; box-shadow: var(--card-shadow); }
 
-        .tracking-code { font-family: "Courier New", monospace; font-weight: bold; color: #555; letter-spacing: 1px; }
-        .back-link { display: inline-block; margin-top: 20px; text-decoration: none; color: #333; font-weight: bold; }
+        /* TABS */
+        .tabs { display: flex; border-bottom: 2px solid #eee; margin-bottom: 25px; }
+        .tab {
+            padding: 15px 25px;
+            text-decoration: none;
+            color: #777;
+            font-weight: 500;
+            transition: 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+        .tab:hover { color: var(--primary-green); background: #fdfdfd; }
+        .tab.active {
+            color: var(--primary-green);
+            border-bottom: 3px solid var(--primary-green);
+            font-weight: bold;
+        }
+
+        /* TABLE */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { text-align: left; padding: 15px; background-color: #f8f9fa; color: #555; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #eee; }
+        td { padding: 15px; border-bottom: 1px solid #eee; vertical-align: middle; }
+        tr:hover td { background-color: #fafafa; }
+
+        /* ELEMENTS */
+        .price-tag { color: var(--price-red); font-weight: bold; font-size: 16px; }
+        .tracking-code { background: #e8f5e9; color: var(--primary-green); padding: 4px 8px; border-radius: 4px; font-family: monospace; font-weight: bold; font-size: 14px; }
+
+        /* STATUS BADGES */
+        .status-badge { font-weight: bold; font-size: 13px; padding: 5px 10px; border-radius: 20px; display: inline-block; }
+        .status-completed { background: #e8f5e9; color: #2e7d32; } /* Green */
+        .status-refunded { background: #ffebee; color: #c62828; } /* Red */
+        .status-pending { background: #fff3e0; color: #ef6c00; } /* Orange */
+
+        /* BUTTONS */
+        .btn { padding: 8px 14px; text-decoration: none; border-radius: 4px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; display: inline-block; transition: 0.2s; margin-right: 5px; }
+
+        .btn-green { background-color: var(--primary-green); color: white; }
+        .btn-green:hover { background-color: var(--primary-hover); transform: translateY(-1px); }
+
+        .btn-blue { background-color: #1976D2; color: white; }
+        .btn-blue:hover { background-color: #1565C0; }
+
+        .btn-outline { border: 1px solid #ccc; color: #555; background: white; }
+        .btn-outline:hover { border-color: #999; color: #333; }
+
+        .btn-red { background-color: white; border: 1px solid var(--price-red); color: var(--price-red); }
+        .btn-red:hover { background-color: var(--price-red); color: white; }
+
+        .back-link { display: inline-block; margin-top: 20px; text-decoration: none; color: #777; font-weight: 500; }
+        .back-link:hover { color: var(--primary-green); }
     </style>
 
     <script>
@@ -44,87 +94,91 @@
 </head>
 <body>
 
-<h2>My Order History</h2>
-
-<div class="tabs">
-    <a href="orders?status=All" class="tab <%= "All".equals(currentStatus) ? "active" : "" %>">All</a>
-    <a href="orders?status=To Ship" class="tab <%= "To Ship".equals(currentStatus) ? "active" : "" %>">To Ship</a>
-    <a href="orders?status=To Receive" class="tab <%= "To Receive".equals(currentStatus) ? "active" : "" %>">To Receive</a>
-    <a href="orders?status=Completed" class="tab <%= "Completed".equals(currentStatus) ? "active" : "" %>">Completed</a>
-    <a href="orders?status=Return/Refund" class="tab <%= "Return/Refund".equals(currentStatus) ? "active" : "" %>">Return/Refund</a>
+<div class="page-header">
+    <h1 class="page-title">My Order History</h1>
+    <a href="products" class="btn btn-outline" style="border:none;">&larr; Back to Shop</a>
 </div>
 
-<table>
-    <tr>
-        <th>Order ID</th>
-        <th>Total (RM)</th>
-        <th>Date</th>
-        <th>Receipt</th>
-        <th>Tracking No.</th>
-        <th>Status</th>
-        <th>Actions</th>
-    </tr>
+<div class="container">
+    <div class="tabs">
+        <a href="orders?status=All" class="tab <%= "All".equals(currentStatus) ? "active" : "" %>">All Orders</a>
+        <a href="orders?status=To Ship" class="tab <%= "To Ship".equals(currentStatus) ? "active" : "" %>">To Ship</a>
+        <a href="orders?status=To Receive" class="tab <%= "To Receive".equals(currentStatus) ? "active" : "" %>">To Receive</a>
+        <a href="orders?status=Completed" class="tab <%= "Completed".equals(currentStatus) ? "active" : "" %>">Completed</a>
 
-    <%
-        boolean hasData = false;
-        while (orders != null && orders.next()) {
-            hasData = true;
-            int orderId = orders.getInt("order_id");
-            double total = orders.getDouble("total_amount");
-            String status = orders.getString("status");
-            String date = orders.getString("created_at");
-            String tracking = orders.getString("tracking_number");
-            if (tracking == null) tracking = "-";
-    %>
-    <tr>
-        <td>#<%= orderId %></td>
-        <td>RM <%= String.format("%.2f", total) %></td>
-        <td><%= date %></td>
+        <a href="orders?status=Return/Refund" class="tab <%= "Return/Refund".equals(currentStatus) ? "active" : "" %>">Return</a>
+    </div>
 
-        <td><a href="receipt?orderId=<%= orderId %>" target="_blank" class="btn btn-dark">View</a></td>
+    <table>
+        <tr>
+            <th>Order ID</th>
+            <th>Total Amount</th>
+            <th>Date Ordered</th>
+            <th>Receipt</th>
+            <th>Tracking No.</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
 
-        <td>
-            <% if (!"-".equals(tracking)) { %>
-            <span class="tracking-code"><%= tracking %></span>
-            <% } else { %> <span style="color:#ccc;">Pending</span> <% } %>
-        </td>
+        <%
+            boolean hasData = false;
+            while (orders != null && orders.next()) {
+                hasData = true;
+                int orderId = orders.getInt("order_id");
+                double total = orders.getDouble("total_amount");
+                String status = orders.getString("status");
+                String date = orders.getString("created_at");
+                String tracking = orders.getString("tracking_number");
+                if (tracking == null) tracking = "-";
+        %>
+        <tr>
+            <td style="font-weight:bold;">#<%= orderId %></td>
+            <td class="price-tag">RM <%= String.format("%.2f", total) %></td>
+            <td style="color:#777;"><%= date.substring(0, 10) %></td>
 
-        <td>
-            <span style="font-weight:bold; color: <%= "Completed".equals(status) ? "green" : "orange" %>;">
-                <%= status %>
-            </span>
-        </td>
+            <td><a href="receipt?orderId=<%= orderId %>" target="_blank" class="btn btn-outline">View Receipt</a></td>
 
-        <td>
-            <% if ("To Receive".equals(status)) { %>
-            <a href="orders?action=receive&orderId=<%= orderId %>" class="btn btn-green" onclick="return confirm('Confirm you received this item?')">Item Delivered</a>
-            <% } %>
+            <td>
+                <% if (!"-".equals(tracking)) { %>
+                <span class="tracking-code"><%= tracking %></span>
+                <% } else { %> <span style="color:#ccc; font-size:13px;">Processing</span> <% } %>
+            </td>
 
-            <% if ("Completed".equals(status)) { %>
-            <button class="btn btn-blue" onclick="promptReturn(<%= orderId %>)">Request Return</button>
-            <% } %>
+            <td>
+                <% if ("Completed".equals(status)) { %>
+                <span class="status-badge status-completed">Completed</span>
+                <% } else if ("Refunded".equals(status)) { %>
 
-            <% if ("Return Requested".equals(status)) { %>
-            <span style="font-size:12px; color:orange; font-weight:bold;">(Processing Return)</span>
-            <% } %>
+                <span class="status-badge status-refunded">Returned</span>
 
-            <% if ("Refunded".equals(status)) { %>
-            <span style="font-size:12px; color:red; font-weight:bold;">(Refunded)</span>
-            <% } %>
+                <% } else { %>
+                <span class="status-badge status-pending"><%= status %></span>
+                <% } %>
+            </td>
 
-            <% if (!"To Receive".equals(status) && !"Completed".equals(status) && !"Return Requested".equals(status) && !"Refunded".equals(status)) { %>
-            <span style="color:#ccc;">-</span>
-            <% } %>
-        </td>
-    </tr>
-    <% } %>
+            <td>
+                <% if ("To Receive".equals(status)) { %>
+                <a href="orders?action=receive&orderId=<%= orderId %>" class="btn btn-green" onclick="return confirm('Confirm receipt?')">Item Received</a>
+                <% } %>
 
-    <% if (!hasData) { %>
-    <tr><td colspan="7" style="padding: 20px;">No orders found in this tab.</td></tr>
-    <% } %>
-</table>
+                <% if ("Completed".equals(status)) { %>
+                <button class="btn btn-red" onclick="promptReturn(<%= orderId %>)">Return Item</button>
+                <% } %>
 
-<a class="back-link" href="products"> &larr; Continue Shopping</a>
+                <% if ("Return Requested".equals(status)) { %> <span style="color:#ef6c00; font-size:13px; font-weight:bold;">Wait for Approval</span> <% } %>
+
+                <% if (!"To Receive".equals(status) && !"Completed".equals(status) && !"Return Requested".equals(status)) { %>
+                <span style="color:#ccc;">-</span>
+                <% } %>
+            </td>
+        </tr>
+        <% } %>
+
+        <% if (!hasData) { %>
+        <tr><td colspan="7" style="padding: 40px; text-align:center; color:#999;">No orders found in this category.</td></tr>
+        <% } %>
+    </table>
+</div>
 
 </body>
 </html>

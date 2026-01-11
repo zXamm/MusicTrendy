@@ -12,6 +12,7 @@
     String currentStatus = (String) request.getAttribute("currentStatus");
     if (currentStatus == null) currentStatus = "All";
 
+    //Dashboard Data (From your logic)
     Double totalSalesObj = (Double) request.getAttribute("totalSales");
     double totalSales = (totalSalesObj != null) ? totalSalesObj : 0.0;
 
@@ -30,146 +31,169 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Admin Order Management</title>
+    <title>Admin Dashboard | MusicTrendy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; }
+        :root {
+            --admin-dark: #222;
+            --admin-green: #558B2F;
+            --bg-gray: #f4f4f4;
+        }
 
-        .cards { display: flex; gap: 20px; margin-bottom: 30px; }
-        .card { flex: 1; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center; }
-        .card h3 { margin: 0 0 10px; color: #555; font-size: 16px; }
-        .card p { margin: 0; font-size: 24px; font-weight: bold; color: #333; }
+        body { font-family: 'Roboto', sans-serif; margin: 0; background-color: var(--bg-gray); padding-bottom: 50px; }
 
-        .tabs { margin-bottom: 20px; border-bottom: 2px solid #ccc; }
-        .tab { display: inline-block; padding: 10px 20px; text-decoration: none; color: #555; background: #e0e0e0; margin-right: 5px; border-radius: 5px 5px 0 0; }
-        .tab.active { background-color: #333; color: white; }
+        /* HEADER */
+        .admin-header { background: var(--admin-dark); color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .admin-title { margin: 0; font-size: 20px; font-weight: 500; letter-spacing: 1px; }
+        .back-btn { color: white; text-decoration: none; font-size: 14px; opacity: 0.8; }
+        .back-btn:hover { opacity: 1; text-decoration: underline; }
 
-        table { width: 100%; border-collapse: collapse; background: white; }
-        th, td { padding: 12px; border: 1px solid #ddd; text-align: center; }
-        th { background: #333; color: white; }
+        /* STATS CARDS */
+        .stats-container { display: flex; gap: 20px; max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+        .stat-card { flex: 1; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); text-align: center; border-left: 5px solid var(--admin-green); }
+        .stat-card h3 { margin: 0 0 10px; color: #777; font-size: 14px; text-transform: uppercase; }
+        .stat-card p { margin: 0; font-size: 28px; font-weight: 700; color: #333; }
 
-        .btn { padding: 6px 12px; text-decoration: none; border-radius: 4px; color: white; font-size: 13px; display: inline-block; margin: 2px; cursor: pointer; border: none; }
+        /* MAIN CONTAINER */
+        .main-container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow: hidden; }
+
+        /* TABS */
+        .tabs { display: flex; background: #f8f9fa; border-bottom: 1px solid #ddd; padding: 0 20px; }
+        .tab { padding: 15px 20px; text-decoration: none; color: #555; font-size: 14px; font-weight: 500; border-bottom: 3px solid transparent; }
+        .tab:hover { color: var(--admin-green); }
+        .tab.active { color: var(--admin-green); border-bottom: 3px solid var(--admin-green); font-weight: bold; }
+
+        /* TABLE */
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 15px 20px; background: white; color: #888; font-size: 12px; text-transform: uppercase; border-bottom: 2px solid #eee; }
+        td { padding: 15px 20px; border-bottom: 1px solid #f0f0f0; color: #333; }
+        tr:hover { background-color: #fcfcfc; }
+
+        /* BADGES */
+        .badge { padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; text-transform: uppercase; }
+        .badge-green { background: #e8f5e9; color: #2e7d32; }
+        .badge-orange { background: #fff3e0; color: #ef6c00; }
+        .badge-red { background: #ffebee; color: #c62828; }
+
+        /* BUTTONS */
+        .btn { padding: 6px 14px; border-radius: 4px; color: white; text-decoration: none; font-size: 12px; font-weight: bold; border: none; cursor: pointer; display: inline-block; margin-right: 5px; }
         .btn-ship { background-color: #007bff; }
         .btn-complete { background-color: #28a745; }
+        .btn-reject { background-color: #dc3545; }
         .btn-view { background-color: #6c757d; }
-        .btn-reason { background-color: #ffc107; color: black; font-weight: bold; } /* New Button Style */
-        .btn-dark { background-color: #222; }
-
-        .tracking-code { font-family: "Courier New", monospace; font-weight: bold; color: #007bff; letter-spacing: 1px; }
+        .btn-reason { background-color: #ffc107; color: black; }
+        .btn-dark { background-color: #333; }
     </style>
 </head>
 <body>
 
-<h2>Admin Dashboard</h2>
+<div class="admin-header">
+    <h1 class="admin-title">ADMINISTRATOR PANEL</h1>
+    <a href="<%= request.getContextPath() %>/admin/dashboard.jsp" class="back-btn">&larr; Back to Dashboard</a>
+</div>
 
-<div class="cards">
-    <div class="card">
-        <h3>Total Sales</h3>
+<div class="stats-container">
+    <div class="stat-card">
+        <h3>Total Sales Revenue</h3>
         <p>RM <%= String.format("%.2f", totalSales) %></p>
     </div>
-    <div class="card">
+    <div class="stat-card" style="border-left-color: #007bff;">
         <h3>Total Orders</h3>
         <p><%= totalOrders %></p>
     </div>
-    <div class="card">
-        <h3>Best Seller</h3>
-        <p><%= bestName %> <span style="font-size:14px; color:grey;">(<%= bestSold %> sold)</span></p>
+    <div class="stat-card" style="border-left-color: #ffc107;">
+        <h3>Best Selling Product</h3>
+        <p style="font-size:20px;"><%= bestName %></p>
+        <span style="font-size:14px; color:#777;">(<%= bestSold %> Sold)</span>
     </div>
 </div>
 
-<h3>Order Management</h3>
+<div class="main-container">
+    <div class="tabs">
+        <a href="adminOrders?status=All" class="tab <%= "All".equals(currentStatus) ? "active" : "" %>">All</a>
+        <a href="adminOrders?status=To Ship" class="tab <%= "To Ship".equals(currentStatus) ? "active" : "" %>">To Ship</a>
+        <a href="adminOrders?status=To Receive" class="tab <%= "To Receive".equals(currentStatus) ? "active" : "" %>">To Receive</a>
+        <a href="adminOrders?status=Completed" class="tab <%= "Completed".equals(currentStatus) ? "active" : "" %>">Completed</a>
+        <a href="adminOrders?status=Return/Refund" class="tab <%= "Return/Refund".equals(currentStatus) ? "active" : "" %>">Return Requests</a>
+    </div>
 
-<div class="tabs">
-    <a href="adminOrders?status=All" class="tab <%= "All".equals(currentStatus) ? "active" : "" %>">All</a>
-    <a href="adminOrders?status=To Ship" class="tab <%= "To Ship".equals(currentStatus) ? "active" : "" %>">To Ship</a>
-    <a href="adminOrders?status=To Receive" class="tab <%= "To Receive".equals(currentStatus) ? "active" : "" %>">To Receive</a>
-    <a href="adminOrders?status=Completed" class="tab <%= "Completed".equals(currentStatus) ? "active" : "" %>">Completed</a>
-    <a href="adminOrders?status=Return/Refund" class="tab <%= "Return/Refund".equals(currentStatus) ? "active" : "" %>">Return Requests</a>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Customer</th>
+            <th>Amount</th>
+            <th>Date</th>
+            <th>Receipt</th>
+            <th>Tracking</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+
+        <%
+            boolean hasOrders = false;
+            while (orders != null && orders.next()) {
+                hasOrders = true;
+                int orderId = orders.getInt("order_id");
+                String customer = orders.getString("customer_name");
+                double total = orders.getDouble("total_amount");
+                String status = orders.getString("status");
+                String date = orders.getString("created_at");
+
+                String tracking = orders.getString("tracking_number");
+                if (tracking == null) tracking = "-";
+
+                //Return Reason handling
+                String returnReason = orders.getString("return_reason");
+                if (returnReason == null) returnReason = "No reason provided";
+                String safeReason = returnReason.replace("'", "\\'").replace("\"", "\\\"");
+        %>
+        <tr>
+            <td>#<%= orderId %></td>
+            <td style="font-weight:500;"><%= customer %></td>
+            <td style="color:#d32f2f; font-weight:bold;">RM <%= String.format("%.2f", total) %></td>
+            <td style="color:#777;"><%= date.substring(0, 10) %></td>
+
+            <td><a href="receipt?orderId=<%= orderId %>" target="_blank" class="btn btn-dark">View</a></td>
+
+            <td style="font-family:monospace; color:#558B2F; font-weight:bold;">
+                <% if (!"-".equals(tracking)) { %><%= tracking %><% } else { %><span style="color:#ccc;">-</span><% } %>
+            </td>
+
+            <td>
+                <% if ("Completed".equals(status)) { %> <span class="badge badge-green">Completed</span> <% }
+            else if ("Refunded".equals(status)) { %>
+                <span class="badge badge-red">Returned</span>
+                <% }
+                else { %> <span class="badge badge-orange"><%= status %></span> <% } %>
+            </td>
+
+            <td>
+                <% if ("To Ship".equals(status)) { %>
+                <a href="adminOrders?action=ship&orderId=<%= orderId %>" class="btn btn-ship" onclick="return confirm('Mark as Shipped?')">Ship Now</a>
+                <% } %>
+
+                <% if ("To Receive".equals(status)) { %>
+                <a href="adminOrders?action=complete&orderId=<%= orderId %>" class="btn btn-complete" onclick="return confirm('Force Complete?')">Mark Done</a>
+                <% } %>
+
+                <% if ("Return Requested".equals(status)) { %>
+                <button class="btn btn-reason" onclick="alert('Reason:\n<%= safeReason %>')">Reason</button>
+                <a href="adminOrders?action=approveReturn&orderId=<%= orderId %>" class="btn btn-complete">Approve</a>
+                <a href="adminOrders?action=rejectReturn&orderId=<%= orderId %>" class="btn btn-reject">Reject</a>
+                <% } %>
+
+                <% if (!"To Ship".equals(status) && !"To Receive".equals(status) && !"Return Requested".equals(status)) { %>
+                <span style="color:#ccc;">-</span>
+                <% } %>
+            </td>
+        </tr>
+        <% } %>
+
+        <% if (!hasOrders) { %>
+        <tr><td colspan="8" style="text-align:center; padding:30px; color:#999;">No orders found in this category.</td></tr>
+        <% } %>
+    </table>
 </div>
-
-<table>
-    <tr>
-        <th>ID</th>
-        <th>Customer</th>
-        <th>Total</th>
-        <th>Date</th>
-        <th>Receipt</th>
-        <th>Tracking No.</th>
-        <th>Status</th>
-        <th>Action</th>
-    </tr>
-
-    <%
-        boolean hasOrders = false;
-        while (orders != null && orders.next()) {
-            hasOrders = true;
-            int orderId = orders.getInt("order_id");
-            String customer = orders.getString("customer_name");
-            double total = orders.getDouble("total_amount");
-            String status = orders.getString("status");
-            String date = orders.getString("created_at");
-
-            String tracking = orders.getString("tracking_number");
-            if (tracking == null) tracking = "-";
-
-            //Fetch Reason safely (handle quotes for JS alert)
-            String returnReason = orders.getString("return_reason");
-            if (returnReason == null) returnReason = "No reason provided";
-            String safeReason = returnReason.replace("'", "\\'").replace("\"", "\\\"");
-
-            String statusColor = "orange";
-            if ("Completed".equals(status)) { statusColor = "green"; }
-            else if ("Refunded".equals(status)) { statusColor = "red"; }
-    %>
-    <tr>
-        <td><%= orderId %></td>
-        <td><%= customer %></td>
-        <td>RM <%= String.format("%.2f", total) %></td>
-        <td><%= date %></td>
-
-        <td><a href="receipt?orderId=<%= orderId %>" target="_blank" class="btn btn-dark">View</a></td>
-
-        <td>
-            <% if (!"-".equals(tracking)) { %>
-            <span class="tracking-code"><%= tracking %></span>
-            <% } else { %> <span style="color:#ccc;">-</span> <% } %>
-        </td>
-
-        <td>
-            <span style="font-weight:bold; color: <%= statusColor %>;">
-                <%= status %>
-            </span>
-        </td>
-
-        <td>
-            <% if ("To Ship".equals(status)) { %>
-            <a href="adminOrders?action=ship&orderId=<%= orderId %>" class="btn btn-ship" onclick="return confirm('Mark this order as Shipped?')">Ship Order</a>
-            <% } %>
-
-            <% if ("To Receive".equals(status)) { %>
-            <a href="adminOrders?action=complete&orderId=<%= orderId %>" class="btn btn-complete" onclick="return confirm('Force complete this order?')">Completed</a>
-            <% } %>
-
-            <% if ("Return Requested".equals(status)) { %>
-            <button class="btn btn-reason" onclick="alert('Customer Reason:\n\n<%= safeReason %>')">View Reason</button>
-
-            <a href="adminOrders?action=approveReturn&orderId=<%= orderId %>" class="btn btn-complete" onclick="return confirm('Approve Refund?')">Approve</a>
-            <a href="adminOrders?action=rejectReturn&orderId=<%= orderId %>" class="btn btn-view" style="background-color:red;" onclick="return confirm('Reject Return?')">Reject</a>
-            <% } %>
-
-            <% if (!"To Ship".equals(status) && !"To Receive".equals(status) && !"Return Requested".equals(status)) { %>
-            <span style="color:#ccc;">-</span>
-            <% } %>
-        </td>
-    </tr>
-    <% } %>
-
-    <% if (!hasOrders) { %>
-    <tr><td colspan="8">No orders found for this status.</td></tr>
-    <% } %>
-</table>
-
-<br>
-<a href="<%= request.getContextPath() %>/admin/dashboard.jsp" style="color:black; font-weight:bold;">&larr; Back to Dashboard</a>
 
 </body>
 </html>
