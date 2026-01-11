@@ -142,7 +142,7 @@
                             <div class="bank-grid">
                                 <%
                                     String[] banks = {"Maybank2u", "CIMB Clicks", "Public Bank", "RHB Now", "Hong Leong", "AmOnline", "Bank Islam", "UOB"};
-                                    String[] logos = {"maybank.png", "cimb.png", "publicbank.png", "rhb.png", "hongleong.png", "ambank.png", "bankislam.png", "uob.png"};
+                                    String[] logos = {"maybank.jpg", "cimb.jpg", "publicbank.png", "rhb.png", "hongleong.jpg", "ambank.png", "bankislam.png", "uob.jpg"};
                                     for(int i=0; i<banks.length; i++) {
                                 %>
                                 <label class="bank-option">

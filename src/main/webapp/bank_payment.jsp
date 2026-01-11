@@ -3,6 +3,28 @@
     String bankName = request.getParameter("bank");
     String amount = request.getParameter("totalAmount");
     if (bankName == null) bankName = "Bank Gateway";
+
+    String bankLogo = "images/tv.png"; // Default fallback icon
+    if (bankName != null) {
+        String lowerBank = bankName.toLowerCase();
+        if (lowerBank.contains("maybank")) {
+            bankLogo = "images/maybank.jpg";
+        } else if (lowerBank.contains("cimb")) {
+            bankLogo = "images/cimb.jpg";
+        } else if (lowerBank.contains("public")) {
+            bankLogo = "images/publicbank.png";
+        } else if (lowerBank.contains("rhb")) {
+            bankLogo = "images/rhb.png";
+        } else if (lowerBank.contains("hong")) {
+            bankLogo = "images/hongleong.jpg";
+        } else if (lowerBank.contains("ambank")) {
+            bankLogo = "images/ambank.png";
+        } else if (lowerBank.contains("islam")) {
+            bankLogo = "images/bankislam.png";
+        } else if (lowerBank.contains("uob")) {
+            bankLogo = "images/uob.jpg";
+        }
+    }
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -27,7 +49,10 @@
 
 <div class="gateway-card" id="loginForm">
     <div class="gateway-header">
-        <h4 class="m-0"><i class="fas fa-university me-2"></i> <%= bankName %></h4>
+        <h4 class="m-0">
+            <img src="<%= bankLogo %>" alt="Bank Logo" style="height: 30px; margin-right: 10px; background: #fff; padding: 2px; border-radius: 4px;">
+            <%= bankName %>
+        </h4>
         <small>Secure FPX Payment Gateway</small>
     </div>
 
